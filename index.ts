@@ -2,6 +2,7 @@
 
 import { Command } from 'commander'
 import ManifestGenerator from './src/ManifestGenerator'
+import EpubPackager from './src/EpubPackager'
 
 const program = new Command()
 
@@ -18,7 +19,8 @@ const packCmd = program.command('pack')
 packCmd
   .argument('<folder>', 'folder package epub file')
   .action((folder) => {
-    console.log('wyse pack is called with params: ' + folder)
+    const packager = new EpubPackager()
+    packager.pack(folder)
   })
 
 program.parse()

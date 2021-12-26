@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { WyseManifest, manifestPlaceholder } from './WyseManifest'
+import { WyseManifest, manifestPlaceholder, manifestPath } from './WyseManifest'
 import * as fs from 'fs'
 
 class ManifestGenerator {
@@ -23,7 +23,7 @@ class ManifestGenerator {
 
   saveManifest(folder: string, manifest: WyseManifest) {
     const folderPath = path.join(process.cwd(), folder)
-    fs.writeFileSync(folderPath + path.sep + 'wyse.json', JSON.stringify(manifest, null, 2))
+    fs.writeFileSync(manifestPath(folderPath), JSON.stringify(manifest, null, 2))
   }
 }
 
