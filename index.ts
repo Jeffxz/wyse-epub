@@ -15,12 +15,13 @@ initCmd
     generator.saveManifest(folder, manifest)
   })
 
-const packCmd = program.command('pack')
-packCmd
-  .argument('<folder>', 'folder package epub file')
-  .action((folder) => {
+const prepCmd = program.command('create-epub-meta')
+prepCmd
+  .argument('<folder>', 'creat folder for epub meta files')
+  .option('-f, --force', 'force overwrite existing epub meta files')
+  .action((folder, options) => {
     const packager = new EpubPackager()
-    packager.pack(folder)
+    packager.pack(folder, options.force)
   })
 
 program.parse()

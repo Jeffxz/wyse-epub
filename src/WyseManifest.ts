@@ -5,7 +5,7 @@ import {
   Identifier, Itemref,
   Language,
   Manifest,
-  ManifestItem,
+  ManifestItem, Meta,
   Metadata,
   Ocf, Package,
   Spine,
@@ -53,24 +53,28 @@ function manifestPath(folder: string): string {
 }
 
 function generateEpubMetadata(manifest: WyseManifest): Metadata {
-  const identifier = new Identifier(manifest.uniqueIdentifier)
+  const identifier = new Identifier(manifest.uniqueIdentifier, manifest.uniqueIdentifier)
   const title = new Title(manifest.name)
   const lang = new Language('en')
-  return new Metadata([identifier], [title], [lang], [])
+  const meta = new Meta('dcterms:modified', new Date(Date.now()).toISOString().split('.')[0] + 'Z')
+  return new Metadata([identifier], [title], [lang], [meta])
 }
 
-function scanItem(folder: string, manifest: WyseManifest, basePath: string): string[] {
+function createFileListRecursively(folder: string, manifest: WyseManifest, basePath: string): string[] {
   const folderPath = path.join(basePath, path.sep, folder)
   const files = fs.readdirSync(folderPath)
   let fileList: string[] = []
-  files.filter(item => !item.startsWith('.') && item != WYSE_JSON && item != manifest.entry).forEach(item => {
+  files.filter(item => item != WYSE_JSON && item != manifest.entry).forEach(item => {
+    if (folder.length == 0 && (item.startsWith('.') || item == 'mimetype' || item == 'content.opf')) {
+      return
+    }
     const itemPath = folderPath + path.sep + item
-    const relativePath = folder + path.sep + item
+    const relativePath = folder.length == 0 ? item : (folder + path.sep + item)
     const stats = fs.statSync(itemPath)
     if (stats.isFile()) {
       fileList.push(relativePath)
     } else if (stats.isDirectory()) {
-      const list = scanItem(relativePath, manifest, basePath)
+      const list = createFileListRecursively(relativePath, manifest, basePath)
       fileList = [...fileList, ...list]
     }
   })
@@ -82,9 +86,9 @@ function generateEpubManifest(manifest: WyseManifest, basePath: string): Manifes
   const manifestItem = new ManifestItem(manifest.entry, manifest.entry, lookup(manifest.entry) || 'text/html')
   itemList.push(manifestItem)
 
-  const filePathList = scanItem('', manifest, basePath)
+  const filePathList = createFileListRecursively('', manifest, basePath)
   filePathList.forEach(filePath => {
-    itemList.push(new ManifestItem(filePath, filePath, lookup(filePath) || 'application/octet-stream'))
+    itemList.push(new ManifestItem(filePath.replace(/\//g, '_'), filePath, lookup(filePath) || 'application/octet-stream'))
   })
   return new Manifest(itemList)
 }
@@ -95,12 +99,12 @@ function generateEpubSpine(manifest: WyseManifest): Spine {
 }
 
 function toEpubObject(manifest: WyseManifest, basePath: string): Epub {
-  const container = new Container(['./content.opf'])
+  const container = new Container(['content.opf'])
   const ocf = new Ocf(container)
   const metadata = generateEpubMetadata(manifest)
   const epubManifest = generateEpubManifest(manifest, basePath)
   const spine = generateEpubSpine(manifest)
-  const pkg = new Package(metadata, epubManifest, spine, manifest.uniqueIdentifier, '3.2')
+  const pkg = new Package(metadata, epubManifest, spine, manifest.uniqueIdentifier, '3.0')
   return new Epub(ocf, pkg)
 }
 
