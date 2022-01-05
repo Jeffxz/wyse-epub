@@ -1,1 +1,37 @@
-#wyse
+# wyse
+
+A CLI tool to generate epub from html website
+
+## Install & Update
+
+If you have nodejs installed in your local then all you needed is to run
+
+```
+npm install -g https://github.com/gardenia-corp/wyse.git
+```
+
+## Convert
+
+Have your website ready (some folder with index.html or entry (x)html file)
+
+Step 1. If it's first time you can run following command to initialize the folder
+```
+wyse init .
+```
+
+Step 2. Once you have wyse.json you can modify each field and add uniqueIdentifier in the file
+
+Step 3. Now you can run following command to generate epub metadata in the folder
+
+```
+wyse create-epub-meta -f .
+```
+
+Step 4. package the folder to epub file with following command
+
+Following command is for Mac. You might need to run other command if not using mac environment.
+
+```
+zip -X ../<output epub file> mimetype
+zip -rg ../<output epub file> ./* -x \*.DS_Store -x mimetype -x wyse.json
+```
