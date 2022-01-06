@@ -7,7 +7,7 @@ A CLI tool to generate epub from html website
 If you have nodejs installed in your local then all you needed is to run
 
 ```
-npm install -g https://github.com/gardenia-corp/wyse.git
+npm install -g wyse
 ```
 
 ## Convert
