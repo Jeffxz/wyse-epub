@@ -1,6 +1,6 @@
 {
   "name": "wyse",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "package local files to epub",
   "main": "dist/index.js",
   "author": "ZHENG XU",
