@@ -2,7 +2,7 @@
   "name": "wyse",
   "version": "0.0.2",
   "description": "package local files to epub",
-  "main": "bin/index.js",
+  "main": "dist/index.js",
   "author": "ZHENG XU",
   "license": "MIT",
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "commander": "^8.3.0",
-    "epub-object-ts": "^0.0.14",
+    "epub-object-ts": "^0.0.15",
     "jszip": "^3.7.1",
     "mime-types": "^2.1.34"
   },
@@ -30,6 +30,6 @@
     "typescript": "^4.5.4"
   },
   "bin": {
-    "wyse": "./bin/index.js"
+    "wyse": "./dist/index.js"
   }
 }
