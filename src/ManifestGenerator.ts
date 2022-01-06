@@ -7,8 +7,10 @@ class ManifestGenerator {
     const folderPath = path.join(process.cwd(), folder)
     const pathList = folderPath.split(path.sep).filter(item => item != '')
     const titleCandidate = pathList[pathList.length - 1]
+    const defaultUUID = titleCandidate + ".gardenia-corp.com"
     let manifest = manifestPlaceholder()
     manifest.name = titleCandidate
+    manifest.uniqueIdentifier = defaultUUID
     const files = fs.readdirSync(folderPath)
     if (manifest.entry.length == 0) {
       files.forEach(file => {

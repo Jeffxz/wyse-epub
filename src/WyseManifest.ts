@@ -39,12 +39,8 @@ function manifestPlaceholder(): WyseManifest {
     version: '0.0.1',
     description: '',
     entry: '',
-    viewport: {
-      width: 800,
-      height: 600
-    },
     author: '',
-    copyright: 'free'
+    copyright: 'MIT'
   } as WyseManifest
 }
 
