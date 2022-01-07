@@ -1,6 +1,6 @@
 {
   "name": "wyse",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "package local files to epub",
   "main": "dist/index.js",
   "author": "Zheng Xu (zxu@gardenia-corp.com)",
