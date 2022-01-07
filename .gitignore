@@ -76,3 +76,4 @@ jsconfig.json
 *.sw*
 
 release/
+tmp/
