@@ -1,15 +1,16 @@
 {
   "name": "wyse",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "package local files to epub",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
   "author": "Zheng Xu (zxu@gardenia-corp.com)",
   "license": "MIT",
   "scripts": {
-    "start": "node ./dist/index.js",
-    "build": "tsc",
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' index.ts",
+    "build": "tsc -p .",
     "lint": "eslint --ext .ts,.tsx,.js --no-eslintrc -c ./eslint.js index.ts src/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "refresh": "rm -rf ./node_modules ./dist ./yarn.lock && yarn"
   },
   "dependencies": {
     "commander": "^8.3.0",
