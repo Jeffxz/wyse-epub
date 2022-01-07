@@ -29,7 +29,7 @@ class EpubPackager {
       }
       fs.mkdirSync(containerFolder)
       fs.writeFileSync(path.join(containerFolder, 'container.xml'), epub.ocf.container.toXmlString())
-      const opfPath = path.join(folderPath, 'content.opf')
+      const opfPath = path.join(folderPath, 'wysebee.opf')
       if (force && fs.existsSync(mimetypePath)) {
         fs.rmSync(opfPath, { force: true })
       }

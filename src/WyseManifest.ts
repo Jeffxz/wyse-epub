@@ -61,7 +61,7 @@ function createFileListRecursively(folder: string, manifest: WyseManifest, baseP
   const files = fs.readdirSync(folderPath)
   let fileList: string[] = []
   files.filter(item => item != WYSE_JSON && item != manifest.entry).forEach(item => {
-    if (folder.length == 0 && (item.startsWith('.') || item == 'mimetype' || item == 'content.opf')) {
+    if (folder.length == 0 && (item.startsWith('.') || item == 'mimetype' || item == 'wysebee.opf')) {
       return
     }
     const itemPath = folderPath + path.sep + item
@@ -95,7 +95,7 @@ function generateEpubSpine(manifest: WyseManifest): Spine {
 }
 
 function toEpubObject(manifest: WyseManifest, basePath: string): Epub {
-  const container = new Container(['content.opf'])
+  const container = new Container(['wysebee.opf'])
   const ocf = new Ocf(container)
   const metadata = generateEpubMetadata(manifest)
   const epubManifest = generateEpubManifest(manifest, basePath)

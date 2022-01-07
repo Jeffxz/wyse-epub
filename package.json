@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "commander": "^8.3.0",
-    "epub-object-ts": "^0.0.15",
+    "epub-object-ts": "^0.0.16",
     "jszip": "^3.7.1",
     "mime-types": "^2.1.34"
   },
