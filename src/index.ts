@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander'
-import ManifestGenerator from './src/ManifestGenerator'
-import EpubPackager from './src/EpubPackager'
-import * as appData from './package.json'
+import ManifestGenerator from './ManifestGenerator'
+import EpubPackager from './EpubPackager'
+import * as appData from '../package.json'
 
 const program = new Command()
 
