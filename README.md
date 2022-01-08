@@ -40,3 +40,9 @@ wyse pack .
 ```
 wyse markdown <markdown file>
 ```
+
+## Convert Local text file
+
+```
+wyse text <text file>
+```

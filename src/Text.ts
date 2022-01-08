@@ -37,8 +37,9 @@ const generateEpubSpine = (): Spine => {
   return new Spine([itemref])
 }
 
-const convertMarkdown = (markdownFile: string) => {
-  const absoluteFilePath = markdownFile.startsWith(path.sep) ? markdownFile : path.join(process.cwd(), markdownFile)
+const convertText = (textFile: string) => {
+  const absoluteFilePath = textFile.startsWith(path.sep) ? textFile : path.join(process.cwd(), textFile)
+  const textFileName = path.basename(textFile)
   const folderPath = path.dirname(absoluteFilePath)
   const epubFileName = path.basename(absoluteFilePath, path.extname(absoluteFilePath)) + EPUB_EXT
   const epubFilePath = path.join(folderPath, epubFileName)
@@ -46,8 +47,8 @@ const convertMarkdown = (markdownFile: string) => {
   const zip = new JSZip()
   zip.file(MIMETYPE_FILE, Ocf.mimetype)
 
-  const markdownString = fs.readFileSync(absoluteFilePath, {encoding: 'utf8'})
-  const htmlString = marked.parse(markdownString)
+  const textString = fs.readFileSync(absoluteFilePath, {encoding: 'utf8'})
+  const htmlString = '<!doctype html><html><body><p>' + textString.replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>') + '</p></body></html>';
   zip.file(INDEX_HTML, htmlString)
   zip.folder(METAINF_FOLDER)
 
@@ -55,7 +56,7 @@ const convertMarkdown = (markdownFile: string) => {
   zip.file(path.join(METAINF_FOLDER, CONTAINER_XML), container.toXmlString())
 
   const uuid = uuidv4()
-  const metadata = generateEpubMetadata(markdownFile, uuid)
+  const metadata = generateEpubMetadata(textFile, uuid)
   const epubManifest = generateEpubManifest()
   const spine = generateEpubSpine()
   const pkg = new Package(metadata, epubManifest, spine, uuid, '3.0')
@@ -68,4 +69,4 @@ const convertMarkdown = (markdownFile: string) => {
     })
 }
 
-export default convertMarkdown
+export default convertText

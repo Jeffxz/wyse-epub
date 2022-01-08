@@ -5,6 +5,7 @@ import ManifestGenerator from './ManifestGenerator'
 import EpubPackager from './EpubPackager'
 import * as appData from '../package.json'
 import convertMarkdown from './Markdown'
+import convertText from './Text'
 
 const program = new Command()
 
@@ -43,6 +44,14 @@ markdownCmd
   .action((file, options) => {
     console.log("wyse version:", appData.version)
     convertMarkdown(file)
+  })
+
+const textCmd = program.command('text')
+textCmd
+  .argument('<file>', 'package epub file from a single text file')
+  .action((file, options) => {
+    console.log("wyse version:", appData.version)
+    convertText(file)
   })
 
 program.parse()
