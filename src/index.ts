@@ -30,7 +30,7 @@ prepCmd
 
 const packCmd = program.command('pack')
 packCmd
-  .argument('<folder>', 'creat folder for epub meta files')
+  .argument('<folder>', 'package epub file from folder')
   .action((folder, options) => {
     console.log("wyse version:", appData.version)
     const packager = new EpubPackager()
