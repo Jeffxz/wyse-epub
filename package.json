@@ -3,7 +3,13 @@
   "version": "0.0.18",
   "description": "package local files to epub",
   "main": "dist/index.js",
-  "author": "Zheng Xu (zxu@gardenia-corp.com)",
+  "author": "Zheng Xu <zxu@gardenia-corp.com> (https://github.com/Jeffxz)",
+  "keywords": ["epub", "convert", "wysebee"],
+  "repository": "https://github.com/gardenia-corp/wyse.git",
+  "homepage": "https://github.com/gardenia-corp/wyse",
+  "bugs": {
+    "url": "https://github.com/gardenia-corp/wyse/issues"
+  },
   "license": "MIT",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' ./src/index.ts",
