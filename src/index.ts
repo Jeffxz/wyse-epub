@@ -22,9 +22,19 @@ prepCmd
   .argument('<folder>', 'creat folder for epub meta files')
   .option('-f, --force', 'force overwrite existing epub meta files')
   .action((folder, options) => {
-    console.log(appData.version)
+    console.log("wyse version:", appData.version)
     const packager = new EpubPackager()
-    packager.pack(folder, options.force)
+    packager.createEpubPackage(folder, options.force)
+  })
+
+
+const packCmd = program.command('pack')
+packCmd
+  .argument('<folder>', 'creat folder for epub meta files')
+  .action((folder, options) => {
+    console.log("wyse version:", appData.version)
+    const packager = new EpubPackager()
+    packager.pack(folder)
   })
 
 program.parse()

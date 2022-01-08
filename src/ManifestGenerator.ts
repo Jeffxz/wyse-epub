@@ -4,7 +4,7 @@ import * as fs from 'fs'
 
 class ManifestGenerator {
   scanFolder(folder: string): WyseManifest {
-    const folderPath = path.join(process.cwd(), folder)
+    const folderPath = folder.startsWith(path.sep) ? folder : path.join(process.cwd(), folder)
     const pathList = folderPath.split(path.sep).filter(item => item != '')
     const titleCandidate = pathList[pathList.length - 1]
     const defaultUUID = titleCandidate + ".gardenia-corp.com"
