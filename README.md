@@ -10,7 +10,7 @@ If you have nodejs installed in your local then all you needed is to run
 npm install -g wyse
 ```
 
-## Convert
+## Convert Local Website
 
 Have your website ready (some folder with index.html or entry (x)html file)
 
@@ -33,4 +33,10 @@ Following command is for Mac. You might need to run other command if not using m
 
 ```
 wyse pack .
+```
+
+## Convert Local Markdown
+
+```
+wyse markdown <markdown file>
 ```
