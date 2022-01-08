@@ -24,7 +24,7 @@ prepCmd
   .argument('<folder>', 'creat folder for epub meta files')
   .option('-f, --force', 'force overwrite existing epub meta files')
   .action((folder, options) => {
-    console.log("wyse version:", appData.version)
+    console.log('wyse version:', appData.version)
     const packager = new EpubPackager()
     packager.createEpubPackage(folder, options.force)
   })
@@ -32,8 +32,8 @@ prepCmd
 const packCmd = program.command('pack')
 packCmd
   .argument('<folder>', 'package epub file from folder')
-  .action((folder, options) => {
-    console.log("wyse version:", appData.version)
+  .action((folder) => {
+    console.log('wyse version:', appData.version)
     const packager = new EpubPackager()
     packager.pack(folder)
   })
@@ -41,16 +41,16 @@ packCmd
 const markdownCmd = program.command('markdown')
 markdownCmd
   .argument('<file>', 'package epub file from a single markdown file')
-  .action((file, options) => {
-    console.log("wyse version:", appData.version)
+  .action((file) => {
+    console.log('wyse version:', appData.version)
     convertMarkdown(file)
   })
 
 const textCmd = program.command('text')
 textCmd
   .argument('<file>', 'package epub file from a single text file')
-  .action((file, options) => {
-    console.log("wyse version:", appData.version)
+  .action((file) => {
+    console.log('wyse version:', appData.version)
     convertText(file)
   })
 

@@ -19,7 +19,7 @@
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' ./src/index.ts",
     "convert": "ts-node ./src/index.ts",
     "build": "tsc -p .",
-    "lint": "eslint --ext .ts,.tsx,.js --no-eslintrc -c ./eslint.js index.ts src/",
+    "lint": "eslint --ext .ts,.tsx,.js --no-eslintrc -c ./eslint.js src/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "refresh": "rm -rf ./node_modules ./dist ./yarn.lock && yarn"
   },
@@ -40,6 +40,8 @@
     "@types/mime-types": "^2.1.1",
     "@types/node": "^17.0.5",
     "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
     "eslint": "^8.5.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
