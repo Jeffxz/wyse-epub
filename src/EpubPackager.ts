@@ -4,7 +4,7 @@ import { manifestPath, toEpubObject, WyseManifest } from './WyseManifest'
 import { Container, Epub, Ocf, Package } from 'epub-object-ts'
 import ManifestGenerator from './ManifestGenerator'
 import * as JSZip from 'jszip'
-import { CONTAINER_XML, EPUB_EXT, METAINF_FOLDER, MIMETYPE_FILE, WYSEBEE_OPF, ZIP_EXT } from './Constant'
+import { CONTAINER_XML, EPUB_EXT, INDEX_HTML, METAINF_FOLDER, MIMETYPE_FILE, WYSEBEE_OPF, ZIP_EXT } from './Constant'
 
 class EpubPackager {
   createEpubPackage(folder: string, force: boolean) {
@@ -64,6 +64,7 @@ class EpubPackager {
     let stream = fs.createReadStream(path.join(folderPath, MIMETYPE_FILE))
     zip.file(MIMETYPE_FILE, stream)
 
+    zip.folder(METAINF_FOLDER)
     const containerFolder = path.join(folderPath, METAINF_FOLDER)
     stream = fs.createReadStream(path.join(containerFolder, CONTAINER_XML))
     zip.file(path.join(METAINF_FOLDER, CONTAINER_XML), stream)

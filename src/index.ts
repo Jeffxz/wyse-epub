@@ -4,6 +4,7 @@ import { Command } from 'commander'
 import ManifestGenerator from './ManifestGenerator'
 import EpubPackager from './EpubPackager'
 import * as appData from '../package.json'
+import convertMarkdown from './Markdown'
 
 const program = new Command()
 
@@ -27,7 +28,6 @@ prepCmd
     packager.createEpubPackage(folder, options.force)
   })
 
-
 const packCmd = program.command('pack')
 packCmd
   .argument('<folder>', 'package epub file from folder')
@@ -35,6 +35,14 @@ packCmd
     console.log("wyse version:", appData.version)
     const packager = new EpubPackager()
     packager.pack(folder)
+  })
+
+const markdownCmd = program.command('markdown')
+markdownCmd
+  .argument('<file>', 'package epub file from a single markdown file')
+  .action((file, options) => {
+    console.log("wyse version:", appData.version)
+    convertMarkdown(file)
   })
 
 program.parse()
