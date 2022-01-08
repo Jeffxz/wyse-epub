@@ -32,6 +32,5 @@ Step 4. package the folder to epub file with following command
 Following command is for Mac. You might need to run other command if not using mac environment.
 
 ```
-zip -X ../<output epub file> mimetype
-zip -rg ../<output epub file> ./* -x \*.DS_Store -x mimetype -x wyse.json
+wyse pack .
 ```
