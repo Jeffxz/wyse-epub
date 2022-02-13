@@ -10,7 +10,7 @@ import {
   METAINF_FOLDER,
   MIMETYPE_FILE,
   WYSEBEE_OPF,
-} from './Constant'
+} from '../Constant'
 
 class EpubPackager {
   createEpubPackage(folder: string, force: boolean) {

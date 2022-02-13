@@ -1,6 +1,6 @@
 # wyse
 
-A CLI tool to generate epub from html website
+A CLI tool to generate epub from html website, markdown and text file, as well as validate epub file
 
 ## Install & Update
 
@@ -10,39 +10,12 @@ If you have nodejs installed in your local then all you needed is to run
 npm install -g wyse
 ```
 
-## Convert Local Website
+## [Convert Local Website, markdown and text file](docs/convert_package.md)
 
-Have your website ready (some folder with index.html or entry (x)html file)
+## [Validate epub file](docs/validate.md)
 
-Step 1. If it's first time you can run following command to initialize the folder
-```
-wyse init .
-```
+The validate function is inspired by [w3c epubcheck](https://github.com/w3c/epubcheck) but intents to:
 
-Step 2. Once you have wyse.json you can modify each field and add uniqueIdentifier in the file
-
-Step 3. Now you can run following command to generate epub metadata in the folder
-
-```
-wyse create-epub -f .
-```
-
-Step 4. package the folder to epub file with following command
-
-Following command is for Mac. You might need to run other command if not using mac environment.
-
-```
-wyse pack .
-```
-
-## Convert Local Markdown
-
-```
-wyse markdown <markdown file>
-```
-
-## Convert Local text file
-
-```
-wyse text <text file>
-```
+* be used by web browser based or node based application
+* have strict (to W3C spec) and loose (more epub reading application friendly) validation rules
+* have customized validation rule set to ignore or promote certain rule to fit different use cases

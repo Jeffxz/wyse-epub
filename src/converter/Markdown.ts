@@ -7,7 +7,7 @@ import {
   METAINF_FOLDER,
   MIMETYPE_FILE,
   WYSEBEE_OPF,
-} from './Constant'
+} from '../Constant'
 import * as JSZip from 'jszip'
 import {
   Container,

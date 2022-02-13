@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander'
-import ManifestGenerator from './ManifestGenerator'
-import EpubPackager from './EpubPackager'
+import ManifestGenerator from './packager/ManifestGenerator'
+import EpubPackager from './packager/EpubPackager'
 import * as appData from '../package.json'
-import convertMarkdown from './Markdown'
-import convertText from './Text'
+import convertMarkdown from './converter/Markdown'
+import convertText from './converter/Text'
+import validate from './validator'
 
 const program = new Command()
 
@@ -36,6 +37,14 @@ packCmd
     console.log('wyse version:', appData.version)
     const packager = new EpubPackager()
     packager.pack(folder)
+  })
+
+const validatorCmd = program.command('check')
+validatorCmd
+  .argument('<epub>', 'validate epub file or folder path')
+  .action((epub) => {
+    console.log('wyse version:', appData.version)
+    validate(epub, {mode: 'strict'})
   })
 
 const markdownCmd = program.command('markdown')

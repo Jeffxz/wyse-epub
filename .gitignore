@@ -77,3 +77,6 @@ jsconfig.json
 
 release/
 tmp/
+
+# test data
+validation_report.json
