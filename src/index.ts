@@ -7,6 +7,7 @@ import * as appData from '../package.json'
 import convertMarkdown from './converter/Markdown'
 import convertText from './converter/Text'
 import validate from './validator'
+import convertMobi from './converter/Mobi'
 
 const program = new Command()
 
@@ -61,6 +62,14 @@ textCmd
   .action((file) => {
     console.log('wyse version:', appData.version)
     convertText(file)
+  })
+
+const mobiCmd = program.command('mobi')
+mobiCmd
+  .argument('<file>', 'package epub file from a mobi file')
+  .action((file) => {
+    console.log('wyse version:', appData.version)
+    convertMobi(file)
   })
 
 program.parse()
