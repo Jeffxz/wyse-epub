@@ -21,7 +21,7 @@ initCmd
     generator.saveManifest(folder, manifest)
   })
 
-const prepCmd = program.command('create-epub')
+const prepCmd = program.command('init-epub')
 prepCmd
   .argument('<folder>', 'creat folder for epub meta files')
   .option('-f, --force', 'force overwrite existing epub meta files')

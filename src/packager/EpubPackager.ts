@@ -8,7 +8,7 @@ import {
   CONTAINER_XML,
   EPUB_EXT,
   METAINF_FOLDER,
-  MIMETYPE_FILE,
+  MIMETYPE_FILE, WYSE_FALLBACK_XHTML, WYSE_FOLDER, WYSE_NAV_XHTML,
   WYSEBEE_OPF,
 } from '../Constant'
 
@@ -46,6 +46,46 @@ class EpubPackager {
       if (force && fs.existsSync(mimetypePath)) {
         fs.rmSync(opfPath, { force: true })
       }
+
+      // prepare temp nav and fallback files
+      const wyseFolder = path.join(folderPath, WYSE_FOLDER)
+      if (force && fs.existsSync(wyseFolder)) {
+        fs.rmSync(wyseFolder, { force: true, recursive: true })
+      }
+      fs.mkdirSync(wyseFolder)
+      const navXhtmlStr = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="en" lang="en"> 
+	<head>
+		<title>Table of Contents</title>
+	</head>
+	<body>
+	<nav epub:type="toc" id="toc" role="doc-toc">
+	<h1>Placeholder for table of contents</h1>
+	<ol>
+    <li><a href="../${manifest.entry}">entry page</a></li>
+	</ol>
+	</nav>
+	</body>
+</html>`
+      fs.writeFileSync(
+        path.join(wyseFolder, WYSE_NAV_XHTML),
+        navXhtmlStr
+      )
+      const fallbackXhtmlStr = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="en" lang="en"> 
+	<head>
+		<title>Fallback XHTML</title>
+	</head>
+	<body>
+	</body>
+</html>
+      `
+      fs.writeFileSync(
+        path.join(wyseFolder, WYSE_FALLBACK_XHTML),
+        fallbackXhtmlStr
+      )
       fs.writeFileSync(opfPath, epub.epubPackage.toXmlString())
     })
   }

@@ -16,6 +16,7 @@ import {
 } from 'epub-object-ts'
 import { lookup } from 'mime-types'
 import * as fs from 'fs'
+import { WYSE_FALLBACK_ID, WYSE_FALLBACK_XHTML, WYSE_FOLDER, WYSE_NAV_ID, WYSE_NAV_XHTML } from '../Constant'
 
 const WYSE_JSON = 'wyse.json'
 
@@ -31,6 +32,7 @@ type WyseManifest = {
   }
   author: string
   copyright: string
+  coverImage: string
 }
 
 function manifestPlaceholder(): WyseManifest {
@@ -103,18 +105,32 @@ function generateEpubManifest(
     manifest.entry,
     lookup(manifest.entry) || 'text/html'
   )
+  manifestItem.fallback = WYSE_FALLBACK_ID
   itemList.push(manifestItem)
 
   const filePathList = createFileListRecursively('', manifest, basePath)
   filePathList.forEach((filePath) => {
-    itemList.push(
+    if (filePath.endsWith('.epub') || filePath.startsWith(WYSE_FOLDER + path.sep)) {
+      return
+    }
+    const item =
       new ManifestItem(
         filePath.replace(/\//g, '_'),
         filePath,
         lookup(filePath) || 'application/octet-stream'
       )
-    )
+    if (manifest.coverImage && manifest.coverImage.length > 0 && filePath.includes(manifest.coverImage)) {
+      item.properties = ['cover-image']
+    }
+    itemList.push(item)
   })
+  // add dummy nav
+  const navItem = new ManifestItem(WYSE_NAV_ID, `${WYSE_FOLDER}/${WYSE_NAV_XHTML}`, 'application/xhtml+xml')
+  navItem.properties = ['nav']
+  itemList.push(navItem)
+  // add html fallback
+  const fallbackItem = new ManifestItem(WYSE_FALLBACK_ID, `${WYSE_FOLDER}/${WYSE_FALLBACK_XHTML}`, 'application/xhtml+xml')
+  itemList.push(fallbackItem)
   return new Manifest(itemList)
 }
 
