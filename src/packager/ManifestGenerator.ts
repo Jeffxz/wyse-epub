@@ -9,7 +9,7 @@ class ManifestGenerator {
       : path.join(process.cwd(), folder)
     const pathList = folderPath.split(path.sep).filter((item) => item != '')
     const titleCandidate = pathList[pathList.length - 1]
-    const defaultUUID = titleCandidate + '.gardenia-corp.com'
+    const defaultUUID = titleCandidate + '.wysebee.com'
     const manifest = manifestPlaceholder()
     manifest.name = titleCandidate
     manifest.uniqueIdentifier = defaultUUID

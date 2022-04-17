@@ -3,16 +3,16 @@
   "version": "0.0.21",
   "description": "package local files to epub",
   "main": "dist/index.js",
-  "author": "Zheng Xu <zxu@gardenia-corp.com> (https://github.com/Jeffxz)",
+  "author": "Zheng Xu <zxu@wysebee.com> (https://github.com/Jeffxz)",
   "keywords": [
     "epub",
     "convert",
     "wysebee"
   ],
-  "repository": "https://github.com/gardenia-corp/wyse.git",
-  "homepage": "https://github.com/gardenia-corp/wyse",
+  "repository": "https://github.com/wysebee/wyse.git",
+  "homepage": "https://github.com/wysebee/wyse",
   "bugs": {
-    "url": "https://github.com/gardenia-corp/wyse/issues"
+    "url": "https://github.com/wysebee/wyse/issues"
   },
   "license": "MIT",
   "scripts": {
