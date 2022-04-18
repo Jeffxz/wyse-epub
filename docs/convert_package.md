@@ -10,7 +10,7 @@ Step 2. Once you have wyse.json you can modify each field and add uniqueIdentifi
 Step 3. Now you can run following command to generate epub metadata in the folder
 
 ```
-wyse create-epub -f .
+wyse init-epub -f .
 ```
 
 Step 4. package the folder to epub file with following command
