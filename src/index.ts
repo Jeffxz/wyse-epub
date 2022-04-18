@@ -11,6 +11,11 @@ import convertMobi from './converter/Mobi'
 
 const program = new Command()
 
+const infoCmd = program.command('info')
+infoCmd.action(() => {
+  console.log(appData.version)
+})
+
 const initCmd = program.command('init')
 initCmd
   .argument('<folder>', 'folder to scan and initialize wyse.json')
