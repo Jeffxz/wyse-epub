@@ -5,8 +5,6 @@ import * as JSZip from 'jszip'
 import { Container, Epub, Ocf, Package } from 'epub-object-ts'
 import { ValidationReport } from './ValidationReport'
 import * as appData from '../../package.json'
-import { manifestPath } from '../packager/WyseManifest'
-
 export interface ValidateOption {
   mode: 'strict' | 'loose'
 }

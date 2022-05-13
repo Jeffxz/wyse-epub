@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import { manifestPath, toEpubObject, WyseManifest } from './WyseManifest'
+import { manifestPath, toEpubObject } from './WyseManifest'
 import { Container, Ocf, Package } from 'epub-object-ts'
 import ManifestGenerator from './ManifestGenerator'
 import * as JSZip from 'jszip'
@@ -11,6 +11,7 @@ import {
   MIMETYPE_FILE, WYSE_FALLBACK_XHTML, WYSE_FOLDER, WYSE_NAV_XHTML,
   WYSEBEE_OPF,
 } from '../Constant'
+import { PublicationManifest } from '../../../pub-manifest'
 
 class EpubPackager {
   createEpubPackage(folder: string, force: boolean) {
@@ -26,7 +27,7 @@ class EpubPackager {
 
     fs.readFile(wysePath, (error, data) => {
       if (error) throw error
-      const manifest = JSON.parse(data.toString()) as WyseManifest
+      const manifest = JSON.parse(data.toString()) as PublicationManifest
       const epub = toEpubObject(manifest, folderPath)
       const mimetypePath = path.join(folderPath, MIMETYPE_FILE)
       if (force && fs.existsSync(mimetypePath)) {
@@ -63,7 +64,7 @@ class EpubPackager {
 	<nav epub:type="toc" id="toc" role="doc-toc">
 	<h1>Placeholder for table of contents</h1>
 	<ol>
-    <li><a href="../${manifest.entry}">entry page</a></li>
+    <li><a href="../${manifest.readingOrder[0]}">entry page</a></li>
 	</ol>
 	</nav>
 	</body>

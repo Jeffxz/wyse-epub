@@ -17,45 +17,25 @@ import {
 import { lookup } from 'mime-types'
 import * as fs from 'fs'
 import { WYSE_FALLBACK_ID, WYSE_FALLBACK_XHTML, WYSE_FOLDER, WYSE_NAV_ID, WYSE_NAV_XHTML } from '../Constant'
+import { PublicationManifest } from 'pub-manifest'
 
-const WYSE_JSON = 'wyse.json'
+export const WYSE_JSON = 'wyse.json'
 
-type WyseManifest = {
-  name: string
-  uniqueIdentifier: string
-  version: string
-  description: string
-  entry: string
-  viewport: {
-    width: number
-    height: number
-  }
-  author: string
-  copyright: string
-  coverImage: string
-}
-
-function manifestPlaceholder(): WyseManifest {
+function manifestPlaceholder(): PublicationManifest {
   return {
+    profile: 'wysebee',
+    id: '',
     name: '',
-    uniqueIdentifier: '',
-    version: '0.0.1',
-    description: '',
-    entry: '',
-    author: '',
-    copyright: 'MIT',
-  } as WyseManifest
+    readingOrder: ['']
+  } as PublicationManifest
 }
 
 function manifestPath(folder: string): string {
   return folder + path.sep + WYSE_JSON
 }
 
-function generateEpubMetadata(manifest: WyseManifest): Metadata {
-  const identifier = new Identifier(
-    manifest.uniqueIdentifier,
-    manifest.uniqueIdentifier
-  )
+function generateEpubMetadata(manifest: PublicationManifest): Metadata {
+  const identifier = new Identifier(manifest.id, manifest.id)
   const title = new Title(manifest.name)
   const lang = new Language('en')
   const meta = new Meta(
@@ -67,14 +47,14 @@ function generateEpubMetadata(manifest: WyseManifest): Metadata {
 
 function createFileListRecursively(
   folder: string,
-  manifest: WyseManifest,
+  manifest: PublicationManifest,
   basePath: string
 ): string[] {
   const folderPath = path.join(basePath, path.sep, folder)
   const files = fs.readdirSync(folderPath)
   let fileList: string[] = []
   files
-    .filter((item) => item != WYSE_JSON && item != manifest.entry)
+    .filter((item) => item != WYSE_JSON && !manifest.readingOrder.includes(item))
     .forEach((item) => {
       if (
         folder.length == 0 &&
@@ -96,14 +76,15 @@ function createFileListRecursively(
 }
 
 function generateEpubManifest(
-  manifest: WyseManifest,
+  manifest: PublicationManifest,
   basePath: string
 ): Manifest {
   const itemList: ManifestItem[] = []
+  const firstItem = manifest.readingOrder[0]
   const manifestItem = new ManifestItem(
-    manifest.entry,
-    manifest.entry,
-    lookup(manifest.entry) || 'text/html'
+    firstItem,
+    firstItem,
+    lookup(firstItem) || 'text/html'
   )
   manifestItem.fallback = WYSE_FALLBACK_ID
   itemList.push(manifestItem)
@@ -134,25 +115,26 @@ function generateEpubManifest(
   return new Manifest(itemList)
 }
 
-function generateEpubSpine(manifest: WyseManifest): Spine {
-  const itemref = new Itemref(manifest.entry)
+function generateEpubSpine(manifest: PublicationManifest): Spine {
+  const itemref = new Itemref(manifest.readingOrder[0])
   return new Spine([itemref])
 }
 
-function toEpubObject(manifest: WyseManifest, basePath: string): Epub {
+function toEpubObject(manifest: PublicationManifest, basePath: string): Epub {
   const container = new Container(['wysebee.opf'])
   const ocf = new Ocf(container)
   const metadata = generateEpubMetadata(manifest)
   const epubManifest = generateEpubManifest(manifest, basePath)
   const spine = generateEpubSpine(manifest)
+  const id = manifest.id || manifest.name
   const pkg = new Package(
     metadata,
     epubManifest,
     spine,
-    manifest.uniqueIdentifier,
+    manifest.id,
     '3.0'
   )
   return new Epub(ocf, pkg)
 }
 
-export { WyseManifest, manifestPlaceholder, manifestPath, toEpubObject }
+export { manifestPlaceholder, manifestPath, toEpubObject }

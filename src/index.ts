@@ -6,8 +6,9 @@ import EpubPackager from './packager/EpubPackager'
 import * as appData from '../package.json'
 import convertMarkdown from './converter/Markdown'
 import convertText from './converter/Text'
-import validate from './validator'
 import convertMobi from './converter/Mobi'
+import * as fs from 'fs'
+import { WYSE_JSON } from './packager/WyseManifest'
 
 const program = new Command()
 
@@ -31,33 +32,35 @@ prepCmd
   .argument('<folder>', 'creat folder for epub meta files')
   .option('-f, --force', 'force overwrite existing epub meta files')
   .action((folder, options) => {
-    console.log('wyse version:', appData.version)
+    console.log('using wyse version:', appData.version)
     const packager = new EpubPackager()
     packager.createEpubPackage(folder, options.force)
+  })
+
+const epub2JsonCmd = program.command('epub2json')
+epub2JsonCmd
+  .argument('<epub>', 'epub single file name or folder of extracted epub file')
+  .option('-f, --force', 'force overwrite wyse.json')
+  .action((epub, options) => {
+    console.log('using wyse version:', appData.version)
+    const generator = new ManifestGenerator()
+    generator.epubToManifest(epub, WYSE_JSON)
   })
 
 const packCmd = program.command('pack')
 packCmd
   .argument('<folder>', 'package epub file from folder')
   .action((folder) => {
-    console.log('wyse version:', appData.version)
+    console.log('using wyse version:', appData.version)
     const packager = new EpubPackager()
     packager.pack(folder)
-  })
-
-const validatorCmd = program.command('check')
-validatorCmd
-  .argument('<epub>', 'validate epub file or folder path')
-  .action((epub) => {
-    console.log('wyse version:', appData.version)
-    validate(epub, {mode: 'strict'})
   })
 
 const markdownCmd = program.command('markdown')
 markdownCmd
   .argument('<file>', 'package epub file from a single markdown file')
   .action((file) => {
-    console.log('wyse version:', appData.version)
+    console.log('using wyse version:', appData.version)
     convertMarkdown(file)
   })
 
@@ -73,7 +76,7 @@ const mobiCmd = program.command('mobi')
 mobiCmd
   .argument('<file>', 'package epub file from a mobi file')
   .action((file) => {
-    console.log('wyse version:', appData.version)
+    console.log('using wyse version:', appData.version)
     convertMobi(file)
   })
 
