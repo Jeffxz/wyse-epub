@@ -14,7 +14,7 @@ export default class EpubToWyseManifest {
       readingOrder: [],
       author: '',
       name: epubHelper.title(),
-      id: epubHelper.epub.epubPackage.uniqueIdentifier
+      id: epubHelper.id
     }
     manifest.readingProgression =
       epubHelper.readingDirection() == DIR.LTR ? TextDirection.LTR : TextDirection.RTL
@@ -34,6 +34,8 @@ export default class EpubToWyseManifest {
     }
     if (epubHelper.nav) {
       manifest.toc = epubHelper.nav.href
+    } else if (epubHelper.toc) {
+      manifest.toc = epubHelper.toc.href
     }
     if (epubHelper.coverImage) {
       manifest.coverImage = epubHelper.coverImage.href

@@ -23,10 +23,13 @@ export const WYSE_JSON = 'wyse.json'
 
 function manifestPlaceholder(): PublicationManifest {
   return {
-    profile: 'wysebee',
-    id: '',
+    profile: 'book',
     name: '',
-    readingOrder: ['']
+    id: '',
+    description: '',
+    author: '',
+    readingOrder: [''],
+    coverImage: '',
   } as PublicationManifest
 }
 
