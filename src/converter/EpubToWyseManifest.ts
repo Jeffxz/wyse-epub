@@ -12,7 +12,15 @@ export default class EpubToWyseManifest {
     let manifest: PublicationManifest = {
       profile: 'wysebee',
       readingOrder: [],
-      author: '',
+      author: epubHelper.authors?.join(),
+      creator: epubHelper.creators?.map(item => item.contentText).join(),
+      publisher: epubHelper.publishers?.map(item => item.contentText).join(),
+      contributor: epubHelper.contributors?.map(item => item.contentText).join(),
+      accessMode: epubHelper.a11yInfo?.accessMode,
+      accessibilityFeature: epubHelper.a11yInfo?.accessibilityFeature,
+      accessibilityHazard: epubHelper.a11yInfo?.accessibilityHazard,
+      accessibilitySummary: epubHelper.a11yInfo?.accessibilitySummary[0],
+      coverImage: epubHelper.coverImage?.href,
       name: epubHelper.title(),
       id: epubHelper.id
     }
