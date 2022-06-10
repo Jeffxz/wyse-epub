@@ -9,6 +9,7 @@ import convertText from './converter/Text'
 import convertMobi from './converter/Mobi'
 import * as fs from 'fs'
 import { WYSE_JSON } from './packager/WyseManifest'
+import convertImages from './converter/Images'
 
 const program = new Command()
 
@@ -78,6 +79,22 @@ mobiCmd
   .action((file) => {
     console.log('using wyse version:', appData.version)
     convertMobi(file)
+  })
+
+const imagesCmd = program.command('images')
+imagesCmd
+  .argument('<folder>', 'package epub file from image folder')
+  .option('-c, --config <configFilePath>', 'config PublicationManifest json file')
+  .option('-c, --config <configFilePath>', 'config PublicationManifest json file')
+  .action((folder, configFilePath) => {
+    console.log('using wyse version:', appData.version)
+    if (!configFilePath) {
+      console.error('missing config json file')
+      return
+    }
+    const data = fs.readFileSync(configFilePath.config, {encoding: 'utf-8'})
+    const json = JSON.parse(data)
+    convertImages(folder, json)
   })
 
 program.parse()
