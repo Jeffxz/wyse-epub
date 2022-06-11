@@ -85,7 +85,6 @@ const imagesCmd = program.command('images')
 imagesCmd
   .argument('<folder>', 'package epub file from image folder')
   .option('-c, --config <configFilePath>', 'config PublicationManifest json file')
-  .option('-c, --config <configFilePath>', 'config PublicationManifest json file')
   .action((folder, configFilePath) => {
     console.log('using wyse version:', appData.version)
     if (!configFilePath) {

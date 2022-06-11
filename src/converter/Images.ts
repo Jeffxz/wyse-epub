@@ -25,16 +25,17 @@ import * as path from 'path'
 import { CONTAINER_XML, METAINF_FOLDER, MIMETYPE_FILE, WYSE_FOLDER, WYSE_NAV_XHTML, WYSEBEE_OPF } from '../Constant'
 import { Creator, Package, Publisher } from 'epub-object-ts'
 import imageSize from 'image-size'
+import { WyseConfig } from '../WyseConfig'
 
 const IMAGES_FOLDER = 'images'
 const BOOK_ID = 'bookid'
 
-const generateEpubMetadata = (config: PublicationManifest) => {
-  const identifier = new Identifier(config.id, BOOK_ID)
-  const title = new Title(config.name)
+const generateEpubMetadata = (config: WyseConfig) => {
+  const identifier = new Identifier(config.bookId, BOOK_ID)
+  const title = new Title(config.title)
   const lang = new Language('en')
-  if (config.inLanguage && config.inLanguage.length > 0) {
-    lang.contentText = config.inLanguage[0]
+  if (config.language && config.language.length > 0) {
+    lang.contentText = config.language[0]
   }
   const metaList: Meta[] = []
   metaList.push(new Meta(
@@ -55,18 +56,18 @@ const generateEpubMetadata = (config: PublicationManifest) => {
   ))
   const metadata = new Metadata([identifier], [title], [lang], metaList)
   if (config.author) {
-    const creator = new Creator(config.author as string)
+    const creator = new Creator(config.author)
     metadata.creatorList.push(creator)
   }
   if (config.publisher) {
-    const publisher = new Publisher(config.publisher as string)
+    const publisher = new Publisher(config.publisher)
     metadata.creatorList.push(publisher)
   }
 
   return metadata
 }
 
-const generateEpubManifest = (pageList: string[], imageList: string[], config: PublicationManifest): Manifest => {
+const generateEpubManifest = (pageList: string[], imageList: string[], config: WyseConfig): Manifest => {
   const itemList: ManifestItem[] = []
   pageList.forEach((item) => {
     const manifestItem = new ManifestItem(item.replace('.xhtml', ''), item, 'application/xhtml+xml')
@@ -88,20 +89,20 @@ const generateEpubManifest = (pageList: string[], imageList: string[], config: P
   return new Manifest(itemList)
 }
 
-const generateEpubSpine = (pageList: string[], config: PublicationManifest): Spine => {
+const generateEpubSpine = (pageList: string[], config: WyseConfig): Spine => {
   const itemList: Itemref[] = []
   pageList.forEach((item) => {
     const itemref = new Itemref(item.replace('.xhtml', ''))
     itemList.push(itemref)
   })
   const spine = new Spine(itemList)
-  if (config.readingProgression && config.readingProgression === TextDirection.RTL) {
+  if (config.isRTL) {
     spine.pageProgressionDirection = DIR.RTL
   }
   return spine
 }
 
-const convertImages = (imageFolder: string, config: PublicationManifest) => {
+const convertImages = (imageFolder: string, config: WyseConfig) => {
   if (imageFolder.endsWith(path.sep)) {
     imageFolder = imageFolder.slice(0, -1)
   }
@@ -154,8 +155,8 @@ const convertImages = (imageFolder: string, config: PublicationManifest) => {
     fs.copyFileSync(sourceFile, destFile)
   })
   let lang = 'en'
-  if (config.inLanguage && config.inLanguage.length > 0) {
-    lang = config.inLanguage[0]
+  if (config.language && config.language.length > 0) {
+    lang = config.language
   }
   let liItemListString = ''
   pageList.forEach((pageFile, index) => {
@@ -167,7 +168,7 @@ const convertImages = (imageFolder: string, config: PublicationManifest) => {
   xmlns:epub="http://www.idpf.org/2007/ops"
   xml:lang="${lang}">
   <head>
-    <title>${config.name} Page ${index + 1}</title>
+    <title>${config.title} Page ${index + 1}</title>
     <meta name="viewport" content="width=${imageDimensions.width}, height=${imageDimensions.height}"/> 
   </head>
   <body epub:type="bodymatter">
