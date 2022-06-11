@@ -32,8 +32,7 @@ const resizeImages = (folder: string, configPath?: string) => {
     const imageWidth = configJson.width as number
     let files = fs.readdirSync(folder)
     files = files.filter((name)=> {
-      const mimetype = lookup(name)
-      return mimetype && mimetype.startsWith('image')
+      return name !== WYSE_JSON && !name.startsWith('.')
     })
     files.sort((a, b) => {
       return a.length - b.length
