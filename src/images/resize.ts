@@ -33,7 +33,7 @@ const resizeImages = (folder: string, configPath?: string) => {
     let files = fs.readdirSync(folder)
     files = files.filter((name)=> {
       const mimetype = lookup(name)
-      return mimetype && mimetype.includes('image')
+      return mimetype && mimetype.startsWith('image')
     })
     files.sort((a, b) => {
       return a.length - b.length
