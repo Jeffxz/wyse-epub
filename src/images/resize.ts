@@ -37,17 +37,20 @@ const resizeImages = (folder: string, configPath?: string) => {
     const imageWidth = configJson.width as number
     let files = fs.readdirSync(inputFolderName)
     files = files.filter((name)=> {
-      return name !== WYSE_JSON && !name.startsWith('.')
+      return name !== WYSE_JSON
     })
     files.sort((a, b) => {
       return a.length - b.length
     })
+    const fileListSize = files.length
+    let maxLength = fileListSize.toString().length
     files.forEach((fileName, index) => {
       const filePath = path.join(inputFolderName, fileName)
       const ext = path.extname(filePath)
-      const imageFileName = `image_${index.toString().padStart(4, '0')}`
+      const imageFileName = `image_${index.toString().padStart(maxLength, '0')}`
       let outputPath = path.join(outputFolderName, imageFileName)
       outputPath += ext
+      console.log(filePath)
       const imageDimensions = imageSize(filePath)
       if (imageDimensions.width && imageDimensions.height) {
         const ratio = imageWidth / imageDimensions.width
