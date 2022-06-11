@@ -11,6 +11,7 @@ import * as fs from 'fs'
 import { WYSE_JSON } from './packager/WyseManifest'
 import initImageFolder from './images/init'
 import resizeImages from './images/resize'
+import convertImages from './images/convert'
 
 const program = new Command()
 
@@ -94,12 +95,9 @@ imagesCmd
       initImageFolder(folder)
     } else if (options.resize) {
       resizeImages(folder, options.config)
+    } else {
+      convertImages(folder, options.config)
     }
-    /*
-    const data = fs.readFileSync(options.config, {encoding: 'utf-8'})
-    const json = JSON.parse(data)
-    convertImages(folder, json)
-    */
   })
 
 program.parse()

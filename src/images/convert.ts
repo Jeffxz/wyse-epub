@@ -26,6 +26,8 @@ import { CONTAINER_XML, METAINF_FOLDER, MIMETYPE_FILE, WYSE_FOLDER, WYSE_NAV_XHT
 import { Creator, Package, Publisher } from 'epub-object-ts'
 import imageSize from 'image-size'
 import { WyseConfig } from '../data/WyseConfig'
+import { WYSE_JSON } from '../packager/WyseManifest'
+import chalk from 'chalk'
 
 const IMAGES_FOLDER = 'images'
 const BOOK_ID = 'bookid'
@@ -102,11 +104,23 @@ const generateEpubSpine = (pageList: string[], config: WyseConfig): Spine => {
   return spine
 }
 
-const convertImages = (imageFolder: string, config: WyseConfig) => {
-  if (imageFolder.endsWith(path.sep)) {
-    imageFolder = imageFolder.slice(0, -1)
+const convertImages = (folder: string, configPath?: string) => {
+  let configFilePath = ''
+  let inputFolderName = folder
+  if (inputFolderName.endsWith(path.sep)) {
+    inputFolderName = inputFolderName.slice(0, -1)
   }
-  const files = fs.readdirSync(imageFolder)
+  if (!configPath) {
+    configFilePath = path.join(inputFolderName, WYSE_JSON)
+    if (!fs.existsSync(configFilePath)) {
+      console.log(chalk.red('Can not find config file, please run "wyse images -i" at first.'))
+    }
+  } else {
+    configFilePath = configPath
+  }
+  const data = fs.readFileSync(configFilePath, {encoding: 'utf-8'})
+  const configJson = JSON.parse(data) as WyseConfig
+  const files = fs.readdirSync(inputFolderName)
   let imageList: string[] = []
   let pageList: string[] = []
   files.forEach((item, index) => {
@@ -117,10 +131,10 @@ const convertImages = (imageFolder: string, config: WyseConfig) => {
       pageList.push(xhtmlName)
     }
   })
-  const manifest = generateEpubManifest(pageList, imageList, config)
-  const spine = generateEpubSpine(pageList, config)
-  const metadata = generateEpubMetadata(config)
-  const outputFolderName = `${imageFolder}_epub`
+  const manifest = generateEpubManifest(pageList, imageList, configJson)
+  const spine = generateEpubSpine(pageList, configJson)
+  const metadata = generateEpubMetadata(configJson)
+  const outputFolderName = `${inputFolderName}_epub`
   if (fs.existsSync(outputFolderName)) {
     fs.rmdirSync(outputFolderName, { recursive: true })
   }
@@ -150,17 +164,17 @@ const convertImages = (imageFolder: string, config: WyseConfig) => {
   const contentImagesFolder = path.join(contentFolder, IMAGES_FOLDER)
   fs.mkdirSync(contentImagesFolder)
   imageList.forEach((imageFile) => {
-    const sourceFile = path.join(imageFolder, imageFile)
+    const sourceFile = path.join(inputFolderName, imageFile)
     const destFile = path.join(contentImagesFolder, imageFile)
     fs.copyFileSync(sourceFile, destFile)
   })
   let lang = 'en'
-  if (config.language && config.language.length > 0) {
-    lang = config.language
+  if (configJson.language && configJson.language.length > 0) {
+    lang = configJson.language
   }
   let liItemListString = ''
   pageList.forEach((pageFile, index) => {
-    const imageFile = path.join(imageFolder, imageList[index])
+    const imageFile = path.join(inputFolderName, imageList[index])
     const imageDimensions = imageSize(imageFile)
     const pageFilePath = path.join(contentFolder, pageFile)
     const pageContent = `<?xml version="1.0" encoding="utf-8"?>
@@ -168,7 +182,7 @@ const convertImages = (imageFolder: string, config: WyseConfig) => {
   xmlns:epub="http://www.idpf.org/2007/ops"
   xml:lang="${lang}">
   <head>
-    <title>${config.title} Page ${index + 1}</title>
+    <title>${configJson.title} Page ${index + 1}</title>
     <meta name="viewport" content="width=${imageDimensions.width}, height=${imageDimensions.height}"/> 
   </head>
   <body epub:type="bodymatter">
