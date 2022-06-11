@@ -10,9 +10,13 @@ const chalk = require('chalk')
 
 const resizeImages = (folder: string, configPath?: string) => {
   let configFilePath = ''
-  const outputFolderName = `${folder}_output`
+  let inputFolderName = folder
+  if (inputFolderName.endsWith(path.sep)) {
+    inputFolderName.slice(0, -1)
+  }
+  const outputFolderName = `${inputFolderName}_output`
   if (!configPath) {
-    configFilePath = path.join(folder, WYSE_JSON)
+    configFilePath = path.join(inputFolderName, WYSE_JSON)
     if (!fs.existsSync(configFilePath)) {
       console.log(chalk.red('Can not find config file, please run "wyse images -i" at first.'))
     }
@@ -23,6 +27,7 @@ const resizeImages = (folder: string, configPath?: string) => {
     if (fs.existsSync(outputFolderName)) {
       fs.rmdirSync(outputFolderName)
     }
+    fs.mkdirSync(outputFolderName)
     const data = fs.readFileSync(configFilePath, {encoding: 'utf-8'})
     const configJson = JSON.parse(data) as WyseConfig
     if (!configJson.width || configJson.width <= 10) {
@@ -30,7 +35,7 @@ const resizeImages = (folder: string, configPath?: string) => {
       return
     }
     const imageWidth = configJson.width as number
-    let files = fs.readdirSync(folder)
+    let files = fs.readdirSync(inputFolderName)
     files = files.filter((name)=> {
       return name !== WYSE_JSON && !name.startsWith('.')
     })
@@ -38,7 +43,7 @@ const resizeImages = (folder: string, configPath?: string) => {
       return a.length - b.length
     })
     files.forEach((fileName, index) => {
-      const filePath = path.join(folder, fileName)
+      const filePath = path.join(inputFolderName, fileName)
       const ext = path.extname(filePath)
       const outputPath = path.join(outputFolderName, `image_${index.toString().padStart(4, '0')}`) + ext
       const imageDimensions = imageSize(filePath)
