@@ -9,11 +9,6 @@
     "convert",
     "wysebee"
   ],
-  "repository": "https://github.com/wysebee/wyse.git",
-  "homepage": "https://github.com/wysebee/wyse",
-  "bugs": {
-    "url": "https://github.com/wysebee/wyse/issues"
-  },
   "license": "MIT",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' ./src/index.ts",

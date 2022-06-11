@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import * as JSZip from 'jszip'
 import { Container, Epub, Ocf, Package } from 'epub-object-ts'
 import EpubToWyseManifest from '../converter/EpubToWyseManifest'
-import { PublicationManifest } from '../../../pub-manifest'
+import { PublicationManifest } from 'pub-manifest'
 
 class ManifestGenerator {
   scanFolder(folder: string): PublicationManifest {
