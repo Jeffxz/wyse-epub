@@ -1,6 +1,6 @@
 import { WyseConfig } from '../data/WyseConfig'
 import * as path from 'path'
-import { WYSE_JSON } from '../packager/WyseManifest'
+import { WYSE_JSON } from '../data/WyseManifest'
 import { randomUUID } from 'crypto'
 import * as fs from 'fs'
 const chalk = require('chalk')

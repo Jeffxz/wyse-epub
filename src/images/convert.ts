@@ -12,7 +12,6 @@ import {
   Spine,
   Title,
 } from 'epub-object-ts'
-import { PublicationManifest, TextDirection } from 'pub-manifest'
 import {
   META_RENDITION_LAYOUT_NAME,
   META_RENDITION_LAYOUT_VALUE_FXL,
@@ -26,7 +25,7 @@ import { CONTAINER_XML, METAINF_FOLDER, MIMETYPE_FILE, WYSE_FOLDER, WYSE_NAV_XHT
 import { Creator, Package, Publisher } from 'epub-object-ts'
 import imageSize from 'image-size'
 import { WyseConfig } from '../data/WyseConfig'
-import { WYSE_JSON } from '../packager/WyseManifest'
+import { WYSE_JSON } from '../data/WyseManifest'
 import chalk from 'chalk'
 
 const IMAGES_FOLDER = 'images'

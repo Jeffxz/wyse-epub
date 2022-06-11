@@ -1,43 +1,39 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander'
-import ManifestGenerator from './packager/ManifestGenerator'
-import EpubPackager from './packager/EpubPackager'
+import ManifestGenerator from './epub/ManifestGenerator'
+import EpubPackager from './epub/EpubPackager'
 import * as appData from '../package.json'
 import convertMarkdown from './converter/Markdown'
 import convertText from './converter/Text'
 import convertMobi from './converter/Mobi'
-import * as fs from 'fs'
-import { WYSE_JSON } from './packager/WyseManifest'
+import { WYSE_JSON } from './data/WyseManifest'
 import initImageFolder from './images/init'
 import resizeImages from './images/resize'
 import convertImages from './images/convert'
+import packFolderToEpub from './epub/packFolder'
+const chalk = require('chalk')
 
 const program = new Command()
+program.name('wyse')
+  .description('Wysebee CLI digital book toolkit')
+  .version(appData.version)
 
-const infoCmd = program.command('info')
-infoCmd.action(() => {
-  console.log(appData.version)
-})
-
-const initCmd = program.command('init')
-initCmd
-  .argument('<folder>', 'folder to scan and initialize wyse.json')
-  .action((folder) => {
-    console.log(appData.version)
-    const generator = new ManifestGenerator()
-    const manifest = generator.scanFolder(folder)
-    generator.saveManifest(folder, manifest)
-  })
-
-const prepCmd = program.command('init-epub')
-prepCmd
+const createEpubCmd = program.command('epub')
+createEpubCmd
   .argument('<folder>', 'creat folder for epub meta files')
-  .option('-f, --force', 'force overwrite existing epub meta files')
+  .option('-c, --config <configFilePath>', 'path of WyseConfig json file')
+  .option('-i, --init', 'initialize epub folder')
+  .option('-o, --output <epub>', 'output epub file name. Use with "-p"')
+  .option('-p, --pack', 'package epub file from folder')
+  .option('-t, --template <template>', 'template used to create epub folder')
   .action((folder, options) => {
-    console.log('using wyse version:', appData.version)
-    const packager = new EpubPackager()
-    packager.createEpubPackage(folder, options.force)
+    if (options.init) {
+      console.log('initialize an epub folder')
+    } else if (options.pack) {
+      console.log('using wyse version:', appData.version)
+      packFolderToEpub(folder, options.output)
+    }
   })
 
 const epub2JsonCmd = program.command('epub2json')
@@ -48,15 +44,6 @@ epub2JsonCmd
     console.log('using wyse version:', appData.version)
     const generator = new ManifestGenerator()
     generator.epubToManifest(epub, WYSE_JSON)
-  })
-
-const packCmd = program.command('pack')
-packCmd
-  .argument('<folder>', 'package epub file from folder')
-  .action((folder) => {
-    console.log('using wyse version:', appData.version)
-    const packager = new EpubPackager()
-    packager.pack(folder)
   })
 
 const markdownCmd = program.command('markdown')
@@ -100,4 +87,7 @@ imagesCmd
     }
   })
 
-program.parse()
+try {
+  program.parse(process.argv)
+} catch (error) {
+}

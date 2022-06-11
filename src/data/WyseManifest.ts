@@ -16,7 +16,7 @@ import {
 } from 'epub-object-ts'
 import { lookup } from 'mime-types'
 import * as fs from 'fs'
-import { WYSE_FALLBACK_ID, WYSE_FALLBACK_XHTML, WYSE_FOLDER, WYSE_NAV_ID, WYSE_NAV_XHTML } from '../data/Constant'
+import { WYSE_FALLBACK_ID, WYSE_FALLBACK_XHTML, WYSE_FOLDER, WYSE_NAV_ID, WYSE_NAV_XHTML } from './Constant'
 import { PublicationManifest } from 'pub-manifest'
 
 export const WYSE_JSON = 'wyse.json'

@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { manifestPlaceholder, manifestPath } from './WyseManifest'
+import { manifestPlaceholder, manifestPath } from '../data/WyseManifest'
 import * as fs from 'fs'
 import * as JSZip from 'jszip'
 import { Container, Epub, Ocf, Package } from 'epub-object-ts'

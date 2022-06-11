@@ -1,6 +1,6 @@
 import { WyseConfig } from '../data/WyseConfig'
 import * as path from 'path'
-import { WYSE_JSON } from '../packager/WyseManifest'
+import { WYSE_JSON } from '../data/WyseManifest'
 import * as fs from 'fs'
 import imageSize from 'image-size'
 import { convert } from 'imagemagick'

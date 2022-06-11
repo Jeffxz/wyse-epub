@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import { manifestPath, toEpubObject } from './WyseManifest'
+import { manifestPath, toEpubObject } from '../data/WyseManifest'
 import { Container, Ocf, Package } from 'epub-object-ts'
 import ManifestGenerator from './ManifestGenerator'
 import * as JSZip from 'jszip'
@@ -113,48 +113,6 @@ class EpubPackager {
       )
       zip.file(fullPathInsideEpub, stream)
     }
-  }
-
-  pack(folder: string) {
-    const folderPath = folder.startsWith(path.sep)
-      ? folder
-      : path.join(process.cwd(), folder)
-    const fileName =
-      path.basename(folderPath, path.extname(folderPath)) + EPUB_EXT
-    const epubPath = path.join(folderPath, fileName)
-    const zip = new JSZip()
-
-    let stream = fs.createReadStream(path.join(folderPath, MIMETYPE_FILE))
-    zip.file(MIMETYPE_FILE, stream)
-
-    zip.folder(METAINF_FOLDER)
-    const containerFolder = path.join(folderPath, METAINF_FOLDER)
-    stream = fs.createReadStream(path.join(containerFolder, CONTAINER_XML))
-    zip.file(path.join(METAINF_FOLDER, CONTAINER_XML), stream)
-    const xmlString = fs.readFileSync(
-      path.join(containerFolder, CONTAINER_XML),
-      { encoding: 'utf8' }
-    )
-    const container = Container.loadFromXML(xmlString)
-    container?.rootfiles?.forEach((rootfile) => {
-      this.addFileToZip(zip, rootfile.fullPath, folderPath)
-
-      const xmlString = fs.readFileSync(
-        path.join(folderPath, rootfile.fullPath),
-        { encoding: 'utf8' }
-      )
-      const epubPackage = Package.loadFromXML(xmlString)
-      epubPackage?.manifest.items.forEach((item) => {
-        this.addFileToZip(zip, item.href, folderPath)
-      })
-    })
-
-    zip
-      .generateNodeStream({ type: 'nodebuffer', streamFiles: true })
-      .pipe(fs.createWriteStream(epubPath))
-      .on('finish', () => {
-        console.log(`Saved epub file to ${epubPath}`)
-      })
   }
 }
 
