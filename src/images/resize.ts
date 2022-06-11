@@ -12,7 +12,7 @@ const resizeImages = (folder: string, configPath?: string) => {
   let configFilePath = ''
   let inputFolderName = folder
   if (inputFolderName.endsWith(path.sep)) {
-    inputFolderName.slice(0, -1)
+    inputFolderName = inputFolderName.slice(0, -1)
   }
   const outputFolderName = `${inputFolderName}_output`
   if (!configPath) {
@@ -45,7 +45,9 @@ const resizeImages = (folder: string, configPath?: string) => {
     files.forEach((fileName, index) => {
       const filePath = path.join(inputFolderName, fileName)
       const ext = path.extname(filePath)
-      const outputPath = path.join(outputFolderName, `image_${index.toString().padStart(4, '0')}`) + ext
+      const imageFileName = `image_${index.toString().padStart(4, '0')}`
+      let outputPath = path.join(outputFolderName, imageFileName)
+      outputPath += ext
       const imageDimensions = imageSize(filePath)
       if (imageDimensions.width && imageDimensions.height) {
         const ratio = imageWidth / imageDimensions.width
