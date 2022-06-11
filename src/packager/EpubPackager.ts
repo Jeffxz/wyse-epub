@@ -10,7 +10,7 @@ import {
   METAINF_FOLDER,
   MIMETYPE_FILE, WYSE_FALLBACK_XHTML, WYSE_FOLDER, WYSE_NAV_XHTML,
   WYSEBEE_OPF,
-} from '../Constant'
+} from '../data/Constant'
 import { PublicationManifest } from '../../../pub-manifest'
 
 class EpubPackager {

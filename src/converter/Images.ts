@@ -22,10 +22,10 @@ import {
   META_RENDITION_SPREAD_VALUE_LANDSCAPE,
 } from 'epub-object-ts/src/constants'
 import * as path from 'path'
-import { CONTAINER_XML, METAINF_FOLDER, MIMETYPE_FILE, WYSE_FOLDER, WYSE_NAV_XHTML, WYSEBEE_OPF } from '../Constant'
+import { CONTAINER_XML, METAINF_FOLDER, MIMETYPE_FILE, WYSE_FOLDER, WYSE_NAV_XHTML, WYSEBEE_OPF } from '../data/Constant'
 import { Creator, Package, Publisher } from 'epub-object-ts'
 import imageSize from 'image-size'
-import { WyseConfig } from '../WyseConfig'
+import { WyseConfig } from '../data/WyseConfig'
 
 const IMAGES_FOLDER = 'images'
 const BOOK_ID = 'bookid'

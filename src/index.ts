@@ -9,7 +9,8 @@ import convertText from './converter/Text'
 import convertMobi from './converter/Mobi'
 import * as fs from 'fs'
 import { WYSE_JSON } from './packager/WyseManifest'
-import convertImages from './converter/Images'
+import initImageFolder from './images/init'
+import resizeImages from './images/resize'
 
 const program = new Command()
 
@@ -83,17 +84,22 @@ mobiCmd
 
 const imagesCmd = program.command('images')
 imagesCmd
-  .argument('<folder>', 'package epub file from image folder')
-  .option('-c, --config <configFilePath>', 'config PublicationManifest json file')
-  .action((folder, configFilePath) => {
+  .argument('<folder>', 'Epub toolkit for Images')
+  .option('-i, --init', 'generate WyseConfig file')
+  .option('-r, --resize', 'resize images from input folder')
+  .option('-c, --config <configFilePath>', 'path of WyseConfig json file')
+  .action((folder, options) => {
     console.log('using wyse version:', appData.version)
-    if (!configFilePath) {
-      console.error('missing config json file')
-      return
+    if (options.init) {
+      initImageFolder(folder)
+    } else if (options.resize) {
+      resizeImages(folder, options.config)
     }
-    const data = fs.readFileSync(configFilePath.config, {encoding: 'utf-8'})
+    /*
+    const data = fs.readFileSync(options.config, {encoding: 'utf-8'})
     const json = JSON.parse(data)
     convertImages(folder, json)
+    */
   })
 
 program.parse()
