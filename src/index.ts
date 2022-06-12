@@ -12,6 +12,7 @@ import initImageFolder from './images/init'
 import resizeImages from './images/resize'
 import convertImages from './images/convert'
 import packFolderToEpub from './epub/packFolder'
+import createEpubFolder from './epub/createFolder'
 const chalk = require('chalk')
 
 const program = new Command()
@@ -22,7 +23,7 @@ program.name('wyse')
 const createEpubCmd = program.command('epub')
 createEpubCmd
   .argument('<folder>', 'creat folder for epub meta files')
-  .option('-c, --config <configFilePath>', 'path of WyseConfig json file')
+  .option('-c, --config <json>', 'path of WyseConfig json file')
   .option('-i, --init', 'initialize epub folder')
   .option('-o, --output <epub>', 'output epub file name. Use with "-p"')
   .option('-p, --pack', 'package epub file from folder')
@@ -30,6 +31,7 @@ createEpubCmd
   .action((folder, options) => {
     if (options.init) {
       console.log('initialize an epub folder')
+      createEpubFolder(folder, options.template, options.config)
     } else if (options.pack) {
       console.log('using wyse version:', appData.version)
       packFolderToEpub(folder, options.output)

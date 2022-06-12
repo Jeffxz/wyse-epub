@@ -5,7 +5,7 @@ import { Container, Ocf, Package } from 'epub-object-ts'
 import ManifestGenerator from './ManifestGenerator'
 import * as JSZip from 'jszip'
 import {
-  CONTAINER_XML,
+  CONTAINER_XML_FILE,
   EPUB_EXT,
   METAINF_FOLDER,
   MIMETYPE_FILE, WYSE_FALLBACK_XHTML, WYSE_FOLDER, WYSE_NAV_XHTML,
@@ -40,7 +40,7 @@ class EpubPackager {
       }
       fs.mkdirSync(containerFolder)
       fs.writeFileSync(
-        path.join(containerFolder, CONTAINER_XML),
+        path.join(containerFolder, CONTAINER_XML_FILE),
         epub.ocf.container.toXmlString()
       )
       const opfPath = path.join(folderPath, WYSEBEE_OPF)

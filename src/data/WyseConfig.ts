@@ -10,4 +10,5 @@ export interface WyseConfig {
   width?: number
   height?: number
   isRTL?: boolean
+  isFXL?: boolean
 }

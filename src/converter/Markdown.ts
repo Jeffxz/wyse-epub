@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import {
-  CONTAINER_XML,
+  CONTAINER_XML_FILE,
   EPUB_EXT,
   INDEX_HTML,
   METAINF_FOLDER,
@@ -67,7 +67,7 @@ const convertMarkdown = (markdownFile: string) => {
   zip.folder(METAINF_FOLDER)
 
   const container = new Container([WYSEBEE_OPF])
-  zip.file(path.join(METAINF_FOLDER, CONTAINER_XML), container.toXmlString())
+  zip.file(path.join(METAINF_FOLDER, CONTAINER_XML_FILE), container.toXmlString())
 
   const uuid = uuidv4()
   const metadata = generateEpubMetadata(markdownFile, uuid)

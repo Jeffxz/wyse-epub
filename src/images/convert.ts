@@ -21,7 +21,16 @@ import {
   META_RENDITION_SPREAD_VALUE_LANDSCAPE,
 } from 'epub-object-ts/src/constants'
 import * as path from 'path'
-import { CONTAINER_XML, METAINF_FOLDER, MIMETYPE_FILE, WYSE_FOLDER, WYSE_NAV_XHTML, WYSEBEE_OPF } from '../data/Constant'
+import {
+  BOOK_ID,
+  CONTAINER_XML_FILE,
+  CONTAINER_XML_PLACEHOLDER,
+  METAINF_FOLDER,
+  MIMETYPE_FILE,
+  WYSE_FOLDER,
+  WYSE_NAV_XHTML,
+  WYSEBEE_OPF,
+} from '../data/Constant'
 import { Creator, Package, Publisher } from 'epub-object-ts'
 import imageSize from 'image-size'
 import { WyseConfig } from '../data/WyseConfig'
@@ -29,7 +38,6 @@ import { WYSE_JSON } from '../data/WyseManifest'
 import chalk from 'chalk'
 
 const IMAGES_FOLDER = 'images'
-const BOOK_ID = 'bookid'
 
 const generateEpubMetadata = (config: WyseConfig) => {
   const identifier = new Identifier(config.bookId, BOOK_ID)
@@ -142,15 +150,9 @@ const convertImages = (folder: string, configPath?: string) => {
   fs.writeFileSync(mimetypePath, Ocf.mimetype)
   const containerFolder = path.join(outputFolderName, METAINF_FOLDER)
   fs.mkdirSync(containerFolder)
-  const containerString = `<?xml version="1.0"?>
-<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
-<rootfiles>
-  <rootfile full-path="EPUB/content.opf" media-type="application/oebps-package+xml" />
-</rootfiles>
-</container>`
   fs.writeFileSync(
-    path.join(containerFolder, CONTAINER_XML),
-    containerString
+    path.join(containerFolder, CONTAINER_XML_FILE),
+    CONTAINER_XML_PLACEHOLDER
   )
   const contentFolder = path.join(outputFolderName, 'EPUB')
   fs.mkdirSync(contentFolder)
