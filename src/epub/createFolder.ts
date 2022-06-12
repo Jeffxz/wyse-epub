@@ -31,7 +31,8 @@ import {
   META_RENDITION_SPREAD_NAME,
   META_RENDITION_SPREAD_VALUE_LANDSCAPE,
 } from '../../../epub-object-ts/src/constants'
-import { lookup } from 'mime-types'
+import * as JSZIP from 'jszip'
+import fetch from 'node-fetch'
 const chalk = require('chalk')
 
 const generatePlaceholderEpubMetadata = (config: WyseConfig) => {
@@ -93,16 +94,46 @@ const generatePlaceholderEpubSpine = (config: WyseConfig): Spine => {
   return spine
 }
 
+const retrieveRemoteTemplateEpub = (epubUrl: string, epubFolder: string) => {
+  fetch(epubUrl)
+    .then(response => response.buffer())
+    .then(JSZIP.loadAsync)
+    .then((zip) => {
+      Object.keys(zip.files).forEach((filename) => {
+        const dest = path.join(epubFolder, filename)
+        if (filename.endsWith(path.sep)) {
+          fs.mkdirSync(dest)
+        }
+        const zipFile = zip.file(filename)
+        if (zipFile) {
+          zipFile.async('nodebuffer').then(function(content) {
+            fs.writeFileSync(dest, content)
+          })
+        }
+      })
+    })
+    .catch(error => {
+      console.log(chalk.red(error.message))
+    })
+
+}
+
 const createEpubFolder = (folder: string, template?: string, configFilePath?: string) => {
   const epubFolder = folder
+  if (fs.existsSync(epubFolder)) {
+    fs.rmdirSync(epubFolder, { recursive: true })
+  }
+  fs.mkdirSync(epubFolder)
   try {
     if (template) {
-
-    } else {
-      if (fs.existsSync(epubFolder)) {
-        fs.rmdirSync(epubFolder, { recursive: true })
+      if (template === 'epub-tests') {
+        retrieveRemoteTemplateEpub('https://github.com/w3c/epub-tests/raw/main/tests/xx-epub-template.epub', epubFolder)
+      } else if (template === 'epub-tests-fxl') {
+        retrieveRemoteTemplateEpub('https://github.com/w3c/epub-tests/raw/main/tests/xx-fixed-layout-template.epub', epubFolder)
+      } else {
+        console.log(chalk.red(`unknown template "${template}", currently support template name: "epub-tests", "epub-tests-fxl"`))
       }
-      fs.mkdirSync(epubFolder)
+    } else {
       const mimetypePath = path.join(epubFolder, MIMETYPE_FILE)
       fs.writeFileSync(mimetypePath, Ocf.mimetype)
       const containerFolder = path.join(epubFolder, METAINF_FOLDER)
