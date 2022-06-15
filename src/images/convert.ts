@@ -44,7 +44,7 @@ const generateEpubMetadata = (config: WyseConfig) => {
   const title = new Title(config.title)
   const lang = new Language('en')
   if (config.language && config.language.length > 0) {
-    lang.contentText = config.language[0]
+    lang.contentText = config.language
   }
   const metaList: Meta[] = []
   metaList.push(new Meta(
@@ -54,10 +54,6 @@ const generateEpubMetadata = (config: WyseConfig) => {
   metaList.push(new Meta(
     META_RENDITION_LAYOUT_NAME,
     META_RENDITION_LAYOUT_VALUE_FXL
-  ))
-  metaList.push(new Meta(
-    META_RENDITION_ORIENTATION_NAME,
-    META_RENDITION_ORIENTATION_VALUE_PORTRAIT
   ))
   metaList.push(new Meta(
     META_RENDITION_SPREAD_NAME,
@@ -100,8 +96,20 @@ const generateEpubManifest = (pageList: string[], imageList: string[], config: W
 
 const generateEpubSpine = (pageList: string[], config: WyseConfig): Spine => {
   const itemList: Itemref[] = []
-  pageList.forEach((item) => {
+  pageList.forEach((item, index) => {
     const itemref = new Itemref(item.replace('.xhtml', ''))
+    itemref.linear = "yes"
+    if (index === 0 && config.isFirstPageCentered) {
+      itemref.properties = ['rendition:page-spread-center']
+    } else {
+      if (config.isRTL) {
+        if (index % 2 === 0) {
+          itemref.properties = ['page-spread-left']
+        } else {
+          itemref.properties = ['page-spread-right']
+        }
+      }
+    }
     itemList.push(itemref)
   })
   const spine = new Spine(itemList)

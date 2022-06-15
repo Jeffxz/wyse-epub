@@ -11,4 +11,5 @@ export interface WyseConfig {
   height?: number
   isRTL?: boolean
   isFXL?: boolean
+  isFirstPageCentered?: boolean
 }
