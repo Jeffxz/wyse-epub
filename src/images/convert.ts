@@ -33,7 +33,7 @@ import {
 } from '../data/Constant'
 import { Creator, Package, Publisher } from 'epub-object-ts'
 import imageSize from 'image-size'
-import { WyseConfig } from '../data/WyseConfig'
+import { SimpleToc, WyseConfig } from '../data/WyseConfig'
 import { WYSE_JSON } from '../data/WyseManifest'
 import chalk from 'chalk'
 
@@ -181,7 +181,6 @@ const convertImages = (folder: string, configPath?: string) => {
   if (configJson.language && configJson.language.length > 0) {
     lang = configJson.language
   }
-  let liItemListString = ''
   pageList.forEach((pageFile, index) => {
     const imageFile = path.join(inputFolderName, imageList[index])
     const imageDimensions = imageSize(imageFile)
@@ -203,10 +202,18 @@ const convertImages = (folder: string, configPath?: string) => {
       pageFilePath,
       pageContent
     )
-    liItemListString += `
-<li><a href="${pageFile}">Page ${index + 1}</a></li>
-`
   })
+
+  let chapterListString = ''
+  const startPage = configJson.startPage ? configJson.startPage : 0
+  if (configJson.tableOfContents) {
+    configJson.tableOfContents.forEach((item: SimpleToc) => {
+      const newPageIndex = item.pageIndex + startPage - 1
+      chapterListString += `
+<li><a href="${pageList[newPageIndex]}">${item.title}</a></li>
+`
+    })
+  }
 
   // prepare nav file
   const navXhtmlStr = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -217,9 +224,9 @@ const convertImages = (folder: string, configPath?: string) => {
 	</head>
 	<body>
 	<nav epub:type="toc" id="toc" role="doc-toc">
-	<h1>Placeholder for table of contents</h1>
+	<h1>Table of contents</h1>
 	<ol>
-	${liItemListString}
+	${chapterListString}
 	</ol>
 	</nav>
 	</body>

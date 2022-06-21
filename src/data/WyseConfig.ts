@@ -1,3 +1,8 @@
+export interface SimpleToc {
+  title: string
+  pageIndex: number
+}
+
 export interface WyseConfig {
   title: string
   bookId: string
@@ -12,4 +17,6 @@ export interface WyseConfig {
   isRTL?: boolean
   isFXL?: boolean
   isFirstPageCentered?: boolean
+  startPage?: number
+  tableOfContents?: SimpleToc[]
 }
