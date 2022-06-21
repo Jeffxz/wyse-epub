@@ -136,15 +136,14 @@ const convertImages = (folder: string, configPath?: string) => {
   const data = fs.readFileSync(configFilePath, {encoding: 'utf-8'})
   const configJson = JSON.parse(data) as WyseConfig
   const files = fs.readdirSync(inputFolderName)
-  let imageList: string[] = []
   let pageList: string[] = []
-  files.forEach((item, index) => {
+  const imageList = files.filter(item => {
     const mimetype = lookup(item)
-    if (mimetype && mimetype.startsWith('image/')) {
-      imageList.push(item)
-      const xhtmlName = `page_${index + 1}.xhtml`
-      pageList.push(xhtmlName)
-    }
+    return mimetype && mimetype.startsWith('image/')
+  })
+  imageList.forEach((item, index) => {
+    const xhtmlName = `page_${index + 1}.xhtml`
+    pageList.push(xhtmlName)
   })
   const manifest = generateEpubManifest(pageList, imageList, configJson)
   const spine = generateEpubSpine(pageList, configJson)
