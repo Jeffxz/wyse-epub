@@ -33,7 +33,7 @@ import {
 } from '../data/Constant'
 import { Creator, Package, Publisher } from 'epub-object-ts'
 import imageSize from 'image-size'
-import { SimpleToc, WyseConfig } from '../data/WyseConfig'
+import { PageRegionLink, SimpleToc, WyseConfig } from '../data/WyseConfig'
 import { WYSE_JSON } from '../data/WyseManifest'
 import chalk from 'chalk'
 
@@ -180,11 +180,13 @@ const convertImages = (folder: string, configPath?: string) => {
   if (configJson.language && configJson.language.length > 0) {
     lang = configJson.language
   }
+  const startPage = configJson.startPage ? configJson.startPage : 0
+  const pageIndexListHasLinks = configJson.pageRegionLinks?.map(item => (item.pageIndex + startPage - 1))
   pageList.forEach((pageFile, index) => {
     const imageFile = path.join(inputFolderName, imageList[index])
     const imageDimensions = imageSize(imageFile)
     const pageFilePath = path.join(contentFolder, pageFile)
-    const pageContent = `<?xml version="1.0" encoding="utf-8"?>
+    let pageContent = `<?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xml="http://www.w3.org/XML/1998/namespace" 
   xmlns:epub="http://www.idpf.org/2007/ops"
   xml:lang="${lang}">
@@ -192,11 +194,31 @@ const convertImages = (folder: string, configPath?: string) => {
     <title>${configJson.title} Page ${index + 1}</title>
     <meta name="viewport" content="width=${imageDimensions.width}, height=${imageDimensions.height}"/> 
   </head>
-  <body epub:type="bodymatter">
-    <img src="images/${imageList[index]}" alt="Page ${index + 1}"/>
+  <body epub:type="bodymatter">`
+    if (!pageIndexListHasLinks || !pageIndexListHasLinks.includes(index)) {
+      pageContent += `
+    <img src="images/${imageList[index]}" alt="Page ${index + 1}"/>`
+    } else {
+      const regionLink = configJson.pageRegionLinks?.filter(item => item.pageIndex === (index - startPage + 1))[0]
+      if (regionLink) {
+        pageContent += `
+    <img src="images/${imageList[index]}" alt="Page ${index + 1}" usemap="#linkmap"/>
+    <map name="linkmap">`
+        regionLink.links.forEach(item => {
+          pageContent += `
+      <area shape="rect" coords="${item.coords}" href="${item.url}" />`
+        })
+        pageContent += `
+    </map>`
+      } else {
+        pageContent += `
+    <img src="images/${imageList[index]}" alt="Page ${index + 1}"/>`
+      }
+    }
+    pageContent += `
   </body>
 </html> 
-    `
+`
     fs.writeFileSync(
       pageFilePath,
       pageContent
@@ -204,7 +226,6 @@ const convertImages = (folder: string, configPath?: string) => {
   })
 
   let chapterListString = ''
-  const startPage = configJson.startPage ? configJson.startPage : 0
   if (configJson.tableOfContents) {
     configJson.tableOfContents.forEach((item: SimpleToc) => {
       const newPageIndex = item.pageIndex + startPage - 1

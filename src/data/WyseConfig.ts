@@ -3,6 +3,16 @@ export interface SimpleToc {
   pageIndex: number
 }
 
+export interface RegionLink {
+  coords: string
+  url: string
+}
+
+export interface PageRegionLink {
+  pageIndex: number
+  links: RegionLink[]
+}
+
 export interface WyseConfig {
   title: string
   bookId: string
@@ -19,4 +29,5 @@ export interface WyseConfig {
   isFirstPageCentered?: boolean
   startPage?: number
   tableOfContents?: SimpleToc[]
+  pageRegionLinks?: PageRegionLink[]
 }
