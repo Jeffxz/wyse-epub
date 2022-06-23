@@ -1,6 +1,6 @@
 {
   "name": "wyse",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "package local files to epub",
   "main": "dist/index.js",
   "author": "Zheng Xu <zxu@wysebee.com> (https://github.com/Jeffxz)",
