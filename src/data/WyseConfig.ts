@@ -6,6 +6,7 @@ export interface SimpleToc {
 export interface RegionLink {
   coords: string
   url: string
+  altText?: string
 }
 
 export interface PageRegionLink {

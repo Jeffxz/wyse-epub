@@ -142,7 +142,7 @@ const convertImages = (folder: string, configPath?: string) => {
     return mimetype && mimetype.startsWith('image/')
   })
   imageList.forEach((item, index) => {
-    const xhtmlName = `page_${index + 1}.xhtml`
+    const xhtmlName = `page_${index}.xhtml`
     pageList.push(xhtmlName)
   })
   const manifest = generateEpubManifest(pageList, imageList, configJson)
@@ -180,58 +180,15 @@ const convertImages = (folder: string, configPath?: string) => {
   if (configJson.language && configJson.language.length > 0) {
     lang = configJson.language
   }
-  const startPage = configJson.startPage ? configJson.startPage : 0
-  const pageIndexListHasLinks = configJson.pageRegionLinks?.map(item => (item.pageIndex + startPage - 1))
-  pageList.forEach((pageFile, index) => {
-    const imageFile = path.join(inputFolderName, imageList[index])
-    const imageDimensions = imageSize(imageFile)
-    const pageFilePath = path.join(contentFolder, pageFile)
-    let pageContent = `<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xml="http://www.w3.org/XML/1998/namespace" 
-  xmlns:epub="http://www.idpf.org/2007/ops"
-  xml:lang="${lang}">
-  <head>
-    <title>${configJson.title} Page ${index + 1}</title>
-    <meta name="viewport" content="width=${imageDimensions.width}, height=${imageDimensions.height}"/> 
-  </head>
-  <body epub:type="bodymatter">`
-    if (!pageIndexListHasLinks || !pageIndexListHasLinks.includes(index)) {
-      pageContent += `
-    <img src="images/${imageList[index]}" alt="Page ${index + 1}"/>`
-    } else {
-      const regionLink = configJson.pageRegionLinks?.filter(item => item.pageIndex === (index - startPage + 1))[0]
-      if (regionLink) {
-        pageContent += `
-    <img src="images/${imageList[index]}" alt="Page ${index + 1}" usemap="#linkmap"/>
-    <map name="linkmap">`
-        regionLink.links.forEach(item => {
-          pageContent += `
-      <area shape="rect" coords="${item.coords}" href="${item.url}" />`
-        })
-        pageContent += `
-    </map>`
-      } else {
-        pageContent += `
-    <img src="images/${imageList[index]}" alt="Page ${index + 1}"/>`
-      }
-    }
-    pageContent += `
-  </body>
-</html> 
-`
-    fs.writeFileSync(
-      pageFilePath,
-      pageContent
-    )
-  })
 
   let chapterListString = ''
+  let tocMap = new Map<string, string>()
   if (configJson.tableOfContents) {
     configJson.tableOfContents.forEach((item: SimpleToc) => {
-      const newPageIndex = item.pageIndex + startPage - 1
       chapterListString += `
-<li><a href="${pageList[newPageIndex]}">${item.title}</a></li>
+<li><a href="${pageList[item.pageIndex]}">${item.title}</a></li>
 `
+      tocMap.set(pageList[item.pageIndex], item.title)
     })
   }
 
@@ -255,6 +212,57 @@ const convertImages = (folder: string, configPath?: string) => {
     path.join(contentFolder, WYSE_NAV_XHTML),
     navXhtmlStr
   )
+
+  // create each chapter xhtml
+  const pageIndexListHasLinks = configJson.pageRegionLinks?.map(item => item.pageIndex)
+  pageList.forEach((pageFile, index) => {
+    const imageFile = path.join(inputFolderName, imageList[index])
+    const imageDimensions = imageSize(imageFile)
+    const pageFilePath = path.join(contentFolder, pageFile)
+    let pageContent = `<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xml="http://www.w3.org/XML/1998/namespace" 
+  xmlns:epub="http://www.idpf.org/2007/ops"
+  xml:lang="${lang}">
+  <head>
+    <title>${configJson.title} Page ${index + 1}</title>
+    <meta name="viewport" content="width=${imageDimensions.width}, height=${imageDimensions.height}"/> 
+  </head>
+  <body epub:type="bodymatter">`
+    if (!pageIndexListHasLinks || !pageIndexListHasLinks.includes(index)) {
+      pageContent += `
+    <img src="images/${imageList[index]}" alt="Page ${index + 1}"/>`
+    } else {
+      const regionLink = configJson.pageRegionLinks?.filter(item => item.pageIndex === index)[0]
+      if (regionLink) {
+        pageContent += `
+    <img src="images/${imageList[index]}" alt="Page ${index + 1}" usemap="#linkmap"/>
+    <map name="linkmap">`
+        regionLink.links.forEach(item => {
+          let linkAlt = ''
+          if (item.altText) {
+            linkAlt = item.altText
+          } else {
+            linkAlt = tocMap.get(item.url) || `Link to ${item.url}`
+          }
+          pageContent += `
+      <area shape="rect" coords="${item.coords}" href="${item.url}" alt="${linkAlt}" />`
+        })
+        pageContent += `
+    </map>`
+      } else {
+        pageContent += `
+    <img src="images/${imageList[index]}" alt="Page ${index + 1}"/>`
+      }
+    }
+    pageContent += `
+  </body>
+</html>
+`
+    fs.writeFileSync(
+      pageFilePath,
+      pageContent
+    )
+  })
 }
 
 export default convertImages
