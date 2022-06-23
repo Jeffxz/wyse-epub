@@ -3,7 +3,7 @@ import { exec } from 'child_process'
 import * as path from 'path'
 const chalk = require('chalk')
 
-const packFolderToEpub = (folder: string, epubPath: string, callback?: (output:string) => {}) => {
+const packFolderToEpub = (folder: string, epubPath: string, callback?: (output:string) => {}, onError?: (output:string) => {}) => {
   if (!epubPath) {
     console.log(chalk.red('format: wyse epub -p <input> -o <epub path>'))
     return
@@ -27,6 +27,9 @@ const packFolderToEpub = (folder: string, epubPath: string, callback?: (output:s
       callback(outputEpubPath)
     }
     if (error) {
+      if (onError) {
+        onError(error.message)
+      }
       console.log(chalk.red(error))
     }
   })
