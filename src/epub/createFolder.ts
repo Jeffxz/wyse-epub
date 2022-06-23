@@ -20,17 +20,10 @@ import {
   Package,
   Publisher, Spine,
   Title,
+  Constants,
 } from 'epub-object-ts'
 import { WyseConfig } from '../data/WyseConfig'
 import { randomUUID } from 'crypto'
-import {
-  META_RENDITION_LAYOUT_NAME,
-  META_RENDITION_LAYOUT_VALUE_FXL,
-  META_RENDITION_ORIENTATION_NAME,
-  META_RENDITION_ORIENTATION_VALUE_PORTRAIT,
-  META_RENDITION_SPREAD_NAME,
-  META_RENDITION_SPREAD_VALUE_LANDSCAPE,
-} from '../../../epub-object-ts/src/constants'
 import * as JSZIP from 'jszip'
 import fetch from 'node-fetch'
 const chalk = require('chalk')
@@ -49,16 +42,16 @@ const generatePlaceholderEpubMetadata = (config: WyseConfig) => {
   ))
   if (config.isFXL) {
     metaList.push(new Meta(
-      META_RENDITION_LAYOUT_NAME,
-      META_RENDITION_LAYOUT_VALUE_FXL
+      Constants.META_RENDITION_LAYOUT_NAME,
+      Constants.META_RENDITION_LAYOUT_VALUE_FXL
     ))
     metaList.push(new Meta(
-      META_RENDITION_ORIENTATION_NAME,
-      META_RENDITION_ORIENTATION_VALUE_PORTRAIT
+      Constants.META_RENDITION_ORIENTATION_NAME,
+      Constants.META_RENDITION_ORIENTATION_VALUE_PORTRAIT
     ))
     metaList.push(new Meta(
-      META_RENDITION_SPREAD_NAME,
-      META_RENDITION_SPREAD_VALUE_LANDSCAPE
+      Constants.META_RENDITION_SPREAD_NAME,
+      Constants.META_RENDITION_SPREAD_VALUE_LANDSCAPE
     ))
   }
   const metadata = new Metadata([identifier], [title], [lang], metaList)

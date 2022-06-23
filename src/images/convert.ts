@@ -11,15 +11,9 @@ import {
   Metadata, Ocf,
   Spine,
   Title,
+  Constants,
 } from 'epub-object-ts'
-import {
-  META_RENDITION_LAYOUT_NAME,
-  META_RENDITION_LAYOUT_VALUE_FXL,
-  META_RENDITION_ORIENTATION_NAME,
-  META_RENDITION_ORIENTATION_VALUE_PORTRAIT,
-  META_RENDITION_SPREAD_NAME,
-  META_RENDITION_SPREAD_VALUE_LANDSCAPE,
-} from 'epub-object-ts/src/constants'
+
 import * as path from 'path'
 import {
   BOOK_ID,
@@ -52,12 +46,12 @@ const generateEpubMetadata = (config: WyseConfig) => {
     new Date(Date.now()).toISOString().split('.')[0] + 'Z'
   ))
   metaList.push(new Meta(
-    META_RENDITION_LAYOUT_NAME,
-    META_RENDITION_LAYOUT_VALUE_FXL
+    Constants.META_RENDITION_LAYOUT_NAME,
+    Constants.META_RENDITION_LAYOUT_VALUE_FXL
   ))
   metaList.push(new Meta(
-    META_RENDITION_SPREAD_NAME,
-    META_RENDITION_SPREAD_VALUE_LANDSCAPE
+    Constants.META_RENDITION_SPREAD_NAME,
+    Constants.META_RENDITION_SPREAD_VALUE_LANDSCAPE
   ))
   const metadata = new Metadata([identifier], [title], [lang], metaList)
   if (config.author) {
