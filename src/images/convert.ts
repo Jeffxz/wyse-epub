@@ -218,7 +218,7 @@ const convertImages = (folder: string, configPath?: string) => {
   xmlns:epub="http://www.idpf.org/2007/ops"
   xml:lang="${lang}">
   <head>
-    <title>${configJson.title} Page ${index + 1}</title>
+    <title>${configJson.title}</title>
     <meta name="viewport" content="width=${imageDimensions.width}, height=${imageDimensions.height}"/> 
   </head>
   <body epub:type="bodymatter">`
