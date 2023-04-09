@@ -113,7 +113,7 @@ const generateEpubSpine = (pageList: string[], config: WyseConfig): Spine => {
   return spine
 }
 
-const convertImages = (folder: string, configPath?: string) => {
+const convertImages = (folder: string, configPath?: string, done?: () => void) => {
   let configFilePath = ''
   let inputFolderName = folder
   if (inputFolderName.endsWith(path.sep)) {
@@ -271,6 +271,9 @@ const convertImages = (folder: string, configPath?: string) => {
       pageContent
     )
   })
+  if (done) {
+    done()
+  }
 }
 
 export default convertImages

@@ -40,7 +40,9 @@ createEpubCmd
       createEpubFolder(folder, options.template, options.config)
     } else if (options.pack) {
       console.log('using wyse version:', appData.version)
-      packFolderToEpub(folder, options.output)
+      packFolderToEpub(folder, options.output, (outputFile) => {
+        EpubCheck(outputFile)
+      })
     }
   })
 
@@ -91,8 +93,23 @@ imagesCmd
       initImageFolder(folder)
     } else if (options.resizeHeight && options.output) {
       resizeImages(folder, options.output, options.resizeHeight)
-    } else {
+    } else if (options.config) {
       convertImages(folder, options.config)
+    } else {
+      const configFilePath = folder + path.sep + 'wyse.json'
+      const imageFolder = folder + path.sep + 'images'
+      const imageEpubFolder = folder + path.sep + 'images_epub'
+      const pathArray = folder.split(path.sep)
+      let lastItem = pathArray[pathArray.length - 1]
+      if (lastItem.length === 0) {
+        lastItem = pathArray[pathArray.length - 2]
+      }
+      const epubFilePath = folder + path.sep + lastItem + '.epub'
+      convertImages(imageFolder, configFilePath, () => {
+        packFolderToEpub(imageEpubFolder, epubFilePath, (outputFile) => {
+          EpubCheck(outputFile)
+        })
+      })
     }
   })
 
