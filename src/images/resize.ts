@@ -8,13 +8,13 @@ import { charsets } from 'mime-types'
 import lookup = charsets.lookup
 const chalk = require('chalk')
 
-const resizeImages = (folder: string, resizeHeight: number) => {
+const resizeImages = (folder: string, outputFolder: string, resizeHeight: number) => {
   let configFilePath = ''
   let inputFolderName = folder
   if (inputFolderName.endsWith(path.sep)) {
     inputFolderName = inputFolderName.slice(0, -1)
   }
-  const outputFolderName = `${inputFolderName}_image_resized`
+  const outputFolderName = outputFolder
   try {
     if (fs.existsSync(outputFolderName)) {
       fs.rmdirSync(outputFolderName)
@@ -33,7 +33,7 @@ const resizeImages = (folder: string, resizeHeight: number) => {
     files.forEach((fileName, index) => {
       const filePath = path.join(inputFolderName, fileName)
       const ext = path.extname(filePath)
-      const imageFileName = `image_${index.toString().padStart(maxLength, '0')}`
+      const imageFileName = `image_${(index + 1).toString().padStart(maxLength, '0')}`
       let outputPath = path.join(outputFolderName, imageFileName)
       outputPath += ext
       console.log(filePath)

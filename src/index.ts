@@ -14,6 +14,8 @@ import convertImages from './images/convert'
 import packFolderToEpub from './epub/packFolder'
 import createEpubFolder from './epub/createFolder'
 import pdftoimage from './pdf/pdftoimage'
+import * as fs from 'fs'
+import * as path from 'path'
 
 const chalk = require('chalk')
 
@@ -78,28 +80,45 @@ const imagesCmd = program.command('images')
 imagesCmd
   .argument('<folder>', 'Epub toolkit for Images')
   .option('-i, --init', 'generate WyseConfig file')
-  .option('-r, --resize <height>', 'resize images from input folder')
+  .option('-o, --output <outputFolder>', 'output folder')
+  .option('-rh, --resizeHeight <height>', 'resize images from input folder')
   .option('-c, --config <configFilePath>', 'path of WyseConfig json file')
   .action((folder, options) => {
     console.log('using wyse version:', appData.version)
     if (options.init) {
       initImageFolder(folder)
-    } else if (options.resize) {
-      resizeImages(folder, options.resize)
+    } else if (options.resizeHeight && options.output) {
+      resizeImages(folder, options.output, options.resizeHeight)
     } else {
       convertImages(folder, options.config)
     }
   })
+
+const replaceAll = (string: string, search: string, replace: string) => {
+  return string.split(search).join(replace);
+}
 
 const pdfCmd = program.command('pdf')
 pdfCmd
   .argument('<file>', 'pdf toolkit')
   .option('-i, --image <imageFolder>', 'convert pages to images')
   .option('-p, --prefix <prefix>', 'prefix of image file')
+  .option('-rh, --resizeHeight <height>', 'resize images from input folder')
   .action((file, options) => {
     console.log('using wyse version:', appData.version)
     if (options.image && options.prefix) {
       pdftoimage(file, options.image, options.prefix)
+    } else if (!options.image && !options.prefix && options.resizeHeight) {
+      const fileName = replaceAll(path.parse(file).name, ' ', '_')
+      const filePath = path.dirname(file) + path.sep + fileName 
+      fs.mkdirSync(filePath)
+      const tmpPath = filePath + path.sep + 'tmp'
+      fs.mkdirSync(tmpPath)
+      pdftoimage(file, tmpPath, 'image', (folder: string) => {
+        const imagePath = filePath + path.sep + 'images'
+        fs.mkdirSync(imagePath)
+        resizeImages(folder, imagePath, options.resizeHeight)
+      })
     }
   })
 

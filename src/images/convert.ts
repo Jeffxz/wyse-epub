@@ -180,14 +180,14 @@ const convertImages = (folder: string, configPath?: string) => {
   if (configJson.tableOfContents) {
     configJson.tableOfContents.forEach((item: SimpleToc) => {
       chapterListString += `
-<li><a href="${pageList[item.pageIndex]}">${item.title}</a></li>
+        <li><a href="${pageList[item.pageIndex]}">${item.title}</a></li>
 `
       tocMap.set(pageList[item.pageIndex], item.title)
     })
   }
   if (configJson.lastPageAsColophon) {
       chapterListString += `
-<li><a href="${pageList[pageList.length - 1]}">Colophon</a></li>
+        <li><a href="${pageList[pageList.length - 1]}">Colophon</a></li>
 `
       tocMap.set(pageList[pageList.length - 1], "Colophon")
   }
@@ -200,12 +200,20 @@ const convertImages = (folder: string, configPath?: string) => {
 		<title>Table of Contents</title>
 	</head>
 	<body>
-	<nav epub:type="toc" id="toc" role="doc-toc">
-	<h1>Table of contents</h1>
-	<ol>
-	${chapterListString}
-	</ol>
-	</nav>
+	<section class="frontmatter TableOfContents" epub:type="frontmatter toc">
+    <nav epub:type="toc" id="toc" role="doc-toc">
+    <h1>Table of contents</h1>
+      <ol>
+        ${chapterListString}
+      </ol>
+	  </nav>
+		<nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="landmarks">
+			<ol>
+				<li><a href="page_0.xhtml" epub:type="cover">Cover</a></li>
+				<li><a href="page_3.xhtml" epub:type="toc">Table of Contents</a></li>
+			</ol>
+		</nav>
+  </section>
 	</body>
 </html>`
   fs.writeFileSync(
