@@ -16,7 +16,9 @@ import createEpubFolder from './epub/createFolder'
 import pdftoimage from './pdf/pdftoimage'
 import * as fs from 'fs'
 import * as path from 'path'
+import EpubCheck from './epub/EpubCheck'
 
+require('dotenv').config()
 const chalk = require('chalk')
 
 const program = new Command()
@@ -120,6 +122,13 @@ pdfCmd
         resizeImages(folder, imagePath, options.resizeHeight)
       })
     }
+  })
+
+const checkCmd = program.command('check')
+checkCmd
+  .argument('<file>', 'epub file')
+  .action((file, options) => {
+    EpubCheck(file)
   })
 
 try {

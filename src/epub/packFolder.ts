@@ -21,7 +21,7 @@ const packFolderToEpub = (folder: string, epubPath: string, callback?: (output:s
   const excludeList = fileList.filter((fileName) => {
     return fileName.startsWith('.')
   })
-  let cmd = `pushd ${inputFolderPath}; zip -rX ${outputEpubPath} mimetype META-INF ${newList.join(' ')}; popd`
+  let cmd = `cd ${inputFolderPath}; zip -rX ${outputEpubPath} mimetype META-INF ${newList.join(' ')}`
   exec(cmd, (error, stdout, stderr) => {
     if (callback) {
       callback(outputEpubPath)
