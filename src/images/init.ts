@@ -11,7 +11,7 @@ const initImageFolder = (folder: string) => {
     author: 'Auth name goes here',
     bookId: `wyse:${randomUUID()}`,
     language: 'en',
-    width: 800,
+    height: 1920,
   }
   const filePath = path.join(folder, WYSE_JSON)
   if (fs.existsSync(filePath)) {

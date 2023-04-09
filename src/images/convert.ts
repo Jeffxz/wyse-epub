@@ -185,6 +185,12 @@ const convertImages = (folder: string, configPath?: string) => {
       tocMap.set(pageList[item.pageIndex], item.title)
     })
   }
+  if (configJson.lastPageAsColophon) {
+      chapterListString += `
+<li><a href="${pageList[pageList.length - 1]}">Colophon</a></li>
+`
+      tocMap.set(pageList[pageList.length - 1], "Colophon")
+  }
 
   // prepare nav file
   const navXhtmlStr = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>

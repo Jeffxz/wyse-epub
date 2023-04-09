@@ -29,6 +29,7 @@ export interface WyseConfig {
   isFXL?: boolean
   isFirstPageCentered?: boolean
   startPage?: number
+  lastPageAsColophon?: boolean
   tableOfContents?: SimpleToc[]
   pageRegionLinks?: PageRegionLink[]
 }
