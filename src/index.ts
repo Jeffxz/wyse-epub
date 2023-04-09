@@ -78,14 +78,14 @@ const imagesCmd = program.command('images')
 imagesCmd
   .argument('<folder>', 'Epub toolkit for Images')
   .option('-i, --init', 'generate WyseConfig file')
-  .option('-r, --resize', 'resize images from input folder')
+  .option('-r, --resize <height>', 'resize images from input folder')
   .option('-c, --config <configFilePath>', 'path of WyseConfig json file')
   .action((folder, options) => {
     console.log('using wyse version:', appData.version)
     if (options.init) {
       initImageFolder(folder)
     } else if (options.resize) {
-      resizeImages(folder, options.config)
+      resizeImages(folder, options.resize)
     } else {
       convertImages(folder, options.config)
     }

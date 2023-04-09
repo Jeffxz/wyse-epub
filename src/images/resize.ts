@@ -8,33 +8,19 @@ import { charsets } from 'mime-types'
 import lookup = charsets.lookup
 const chalk = require('chalk')
 
-const resizeImages = (folder: string, configPath?: string) => {
+const resizeImages = (folder: string, resizeHeight: number) => {
   let configFilePath = ''
   let inputFolderName = folder
   if (inputFolderName.endsWith(path.sep)) {
     inputFolderName = inputFolderName.slice(0, -1)
   }
-  const outputFolderName = `${inputFolderName}_output`
-  if (!configPath) {
-    configFilePath = path.join(inputFolderName, WYSE_JSON)
-    if (!fs.existsSync(configFilePath)) {
-      console.log(chalk.red('Can not find config file, please run "wyse images -i" at first.'))
-    }
-  } else {
-    configFilePath = configPath
-  }
+  const outputFolderName = `${inputFolderName}_image_resized`
   try {
     if (fs.existsSync(outputFolderName)) {
       fs.rmdirSync(outputFolderName)
     }
     fs.mkdirSync(outputFolderName)
-    const data = fs.readFileSync(configFilePath, {encoding: 'utf-8'})
-    const configJson = JSON.parse(data) as WyseConfig
-    if (!configJson.width || configJson.width <= 10) {
-      console.log(chalk.red('needs width to be specified and larger than 10 to continue. We recommend to use image with width larger than 800 for digital book.'))
-      return
-    }
-    const imageWidth = configJson.width as number
+    const imageHeight = resizeHeight
     let files = fs.readdirSync(inputFolderName)
     files = files.filter((name)=> {
       return name !== WYSE_JSON
@@ -53,9 +39,9 @@ const resizeImages = (folder: string, configPath?: string) => {
       console.log(filePath)
       const imageDimensions = imageSize(filePath)
       if (imageDimensions.width && imageDimensions.height) {
-        const ratio = imageWidth / imageDimensions.width
-        let imageHeight = imageDimensions.height * ratio
-        imageHeight = Math.round(imageHeight)
+        const ratio = imageHeight / imageDimensions.height
+        let imageWidth = imageDimensions.width * ratio
+        imageWidth = Math.round(imageWidth)
         console.log(`converting image ${fileName} from size ${imageDimensions.width} x ${imageDimensions.height} to ${imageWidth} x ${imageHeight} and saving to ${outputPath}`)
         convert([filePath, '-resize', `${imageWidth}x${imageHeight}`, outputPath], (error, output) => {
           if (error) {
