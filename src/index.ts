@@ -13,6 +13,8 @@ import resizeImages from './images/resize'
 import convertImages from './images/convert'
 import packFolderToEpub from './epub/packFolder'
 import createEpubFolder from './epub/createFolder'
+import pdftoimage from './pdf/pdftoimage'
+
 const chalk = require('chalk')
 
 const program = new Command()
@@ -86,6 +88,18 @@ imagesCmd
       resizeImages(folder, options.config)
     } else {
       convertImages(folder, options.config)
+    }
+  })
+
+const pdfCmd = program.command('pdf')
+pdfCmd
+  .argument('<file>', 'pdf toolkit')
+  .option('-i, --image <imageFolder>', 'convert pages to images')
+  .option('-p, --prefix <prefix>', 'prefix of image file')
+  .action((file, options) => {
+    console.log('using wyse version:', appData.version)
+    if (options.image && options.prefix) {
+      pdftoimage(file, options.image, options.prefix)
     }
   })
 
